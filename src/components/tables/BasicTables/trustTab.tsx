@@ -5,55 +5,52 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { FiUploadCloud } from "react-icons/fi";
 import { toast } from "react-toastify";
 
-export default function BannerTable() {
+export default function TrustTable() {
   const [form, setForm] = useState({
     title: "",
     description: "",
   });
+  const [list, setList] = useState([]);
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
-  const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState(null);
-  const [showForm, setShowForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-
   const token = localStorage.getItem("educationToken");
 
-  // Handle input change
+  // Handle input
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Handle file input
+  // Handle file
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file) {
       setImage(file);
       setPreview(URL.createObjectURL(file));
-    } else {
-      toast.error("Please upload a valid image file");
     }
   };
 
-  // Fetch banner list
+  // Fetch trust list
   const fetchList = async () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${import.meta.env.VITE_APP_URL}api/admin/banner`,
+        `${import.meta.env.VITE_APP_URL}api/admin/trust`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setList(res.data.data || []);
     } catch (err) {
-      toast.error("Failed to fetch banners");
+      toast.error("Failed to fetch data");
     } finally {
       setLoading(false);
     }
   };
 
-  // Add / Edit banner
+  // Add / Edit
   const handleSubmit = async () => {
     if (!form.title || !form.description)
       return toast.error("All fields are required");
@@ -64,12 +61,12 @@ export default function BannerTable() {
       formData.append("title", form.title);
       formData.append("description", form.description);
       if (image) formData.append("image", image);
+      if (editId) formData.append("_id", editId);
 
       let res;
       if (editId) {
-        formData.append("_id", editId);
         res = await axios.patch(
-          `${import.meta.env.VITE_APP_URL}api/admin/banner/`,
+          `${import.meta.env.VITE_APP_URL}api/admin/trust`,
           formData,
           {
             headers: {
@@ -80,7 +77,7 @@ export default function BannerTable() {
         );
       } else {
         res = await axios.post(
-          `${import.meta.env.VITE_APP_URL}api/admin/banner`,
+          `${import.meta.env.VITE_APP_URL}api/admin/trust`,
           formData,
           {
             headers: {
@@ -94,7 +91,6 @@ export default function BannerTable() {
       toast.success(res.data.message || "Success!");
       resetForm();
       fetchList();
-      setShowForm(false); // 👈 hide form after successful add/edit
     } catch (err) {
       toast.error(err.response?.data?.message || "Something went wrong");
     } finally {
@@ -103,7 +99,7 @@ export default function BannerTable() {
   };
 
   // Delete confirmation
-  const handleDelete = (id) => {
+  const handleDeleteClick = (id) => {
     setDeleteId(id);
     setConfirmModal(true);
   };
@@ -111,20 +107,27 @@ export default function BannerTable() {
   const handleConfirmDelete = async () => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_APP_URL}api/admin/banner/${deleteId}`,
+        `${import.meta.env.VITE_APP_URL}api/admin/trust/${deleteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success("banner deleted successfully");
+      toast.success("Deleted successfully");
       fetchList();
     } catch (err) {
-      toast.error("Failed to delete banner");
+      toast.error("Failed to delete");
     } finally {
       setConfirmModal(false);
       setDeleteId(null);
     }
   };
 
-  // Edit banner
+  const resetForm = () => {
+    setForm({ title: "", description: "" });
+    setImage(null);
+    setPreview("");
+    setEditId(null);
+    setShowModal(false);
+  };
+
   const openEdit = (item) => {
     setForm({
       title: item.title,
@@ -132,30 +135,7 @@ export default function BannerTable() {
     });
     setPreview(`${import.meta.env.VITE_APP_URL}${item.image}`);
     setEditId(item._id);
-    setShowForm(true); // 👈 show form on edit
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-  };
-
-  // Reset form
-  const resetForm = () => {
-    setForm({ title: "", description: "" });
-    setImage(null);
-    setPreview("");
-    setEditId(null);
-  };
-
-  // Toggle Add New Form
-  const toggleForm = () => {
-    if (showForm) {
-      // if already open, close it and reset form
-      resetForm();
-      setShowForm(false);
-    } else {
-      setShowForm(true);
-      setEditId(null);
-      resetForm();
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    }
+    setShowModal(true);
   };
 
   useEffect(() => {
@@ -163,14 +143,14 @@ export default function BannerTable() {
   }, []);
 
   return (
-    <div className="bg-gray-50 p-8 ">
+    <div className="bg-gray-50 p-8">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <button
-          onClick={toggleForm}
+          onClick={() => setShowModal(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
         >
-          {showForm ? "Close" : editId ? "Cancel Edit" : "Add New"}
+          + Add
         </button>
       </div>
 
@@ -178,14 +158,14 @@ export default function BannerTable() {
       {loading ? (
         <p className="text-center">Loading...</p>
       ) : list.length === 0 ? (
-        <p className="text-center text-gray-500">No banners found</p>
+        <p className="text-center text-gray-500">No items found</p>
       ) : (
-        <div className="overflow-x-auto mb-8">
+        <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-200 text-left">
             <thead className="bg-blue-50">
               <tr>
                 <th className="px-4 py-3 border-b">#</th>
-                <th className="px-4 py-3 border-b">Image</th>
+                <th className="px-4 py-3 border-b">Icon</th>
                 <th className="px-4 py-3 border-b">Title</th>
                 <th className="px-4 py-3 border-b">Description</th>
                 <th className="px-4 py-3 border-b text-center">Actions</th>
@@ -198,12 +178,12 @@ export default function BannerTable() {
                   <td className="px-4 py-3 border-b">
                     <img
                       src={`${import.meta.env.VITE_APP_URL}${item.image}`}
-                      alt="banner"
-                      className="w-32 h-20 object-cover rounded-md shadow-md"
+                      alt="icon"
+                      className="w-10 h-10 object-contain"
                     />
                   </td>
                   <td className="px-4 py-3 border-b">{item.title}</td>
-                  <td className="px-4 py-3 border-b text-gray-700">
+                  <td className="px-4 py-3 border-b">
                     {item.description.length > 80
                       ? item.description.slice(0, 80) + "..."
                       : item.description}
@@ -216,7 +196,7 @@ export default function BannerTable() {
                       <FaEdit />
                     </button>
                     <button
-                      onClick={() => handleDelete(item._id)}
+                      onClick={() => handleDeleteClick(item._id)}
                       className="text-red-600 hover:text-red-800"
                     >
                       <FaTrashAlt />
@@ -229,72 +209,79 @@ export default function BannerTable() {
         </div>
       )}
 
-      {/* Inline Add/Edit Form — Only show when clicked */}
-      {showForm && (
-        <div className="bg-white rounded-2xl p-6 shadow-lg w-full mx-auto transition-all duration-300">
-          <h3 className="text-xl font-semibold mb-4 text-center">
-            {editId ? "Edit Banner" : "Add New Banner"}
-          </h3>
+      {/* Add/Edit Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md relative shadow-xl">
+            <button
+              className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+              onClick={resetForm}
+            >
+              ✖
+            </button>
 
-          <input
-            type="text"
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            placeholder="Enter title"
-            className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
-          />
+            <h3 className="text-xl font-semibold mb-4">
+              {editId ? "Edit Trust Item" : "Add Trust Item"}
+            </h3>
 
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="Enter description"
-            className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
-            rows={3}
-          ></textarea>
+            <input
+              type="text"
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              placeholder="Enter title..."
+              className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
+            />
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Enter description..."
+              className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
+              rows={3}
+            ></textarea>
 
-          <div className="border-2 border-dashed border-blue-400 rounded-xl p-4 text-center mb-3">
-            <label htmlFor="fileInput" className="cursor-pointer">
-              <FiUploadCloud className="text-4xl text-blue-500 mx-auto mb-2" />
-              <span className="text-sm text-gray-600">
-                {image ? "Change Image" : "Click to Upload Image"}
-              </span>
-              <input
-                id="fileInput"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </label>
-          </div>
+            <div className="border-2 border-dashed border-blue-400 rounded-xl p-4 text-center mb-3">
+              <label htmlFor="fileInput" className="cursor-pointer">
+                <FiUploadCloud className="text-3xl text-blue-500 mx-auto mb-2" />
+                <span className="text-sm text-gray-600">
+                  {image ? "Change Icon" : "Click to Upload Icon"}
+                </span>
+                <input
+                  id="fileInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+            </div>
 
-          {preview && (
-            <div className="flex justify-center mb-4">
+            {preview && (
               <img
                 src={preview}
                 alt="Preview"
-                className="w-full h-[60vh] object-cover rounded-xl shadow-md"
+                className="w-12 h-12 object-contain rounded mx-auto mb-3"
               />
-            </div>
-          )}
+            )}
 
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
-          >
-            {loading ? "Saving..." : editId ? "Update Banner" : "Add Banner"}
-          </button>
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+            >
+              {loading ? "Saving..." : "Save"}
+            </button>
+          </div>
         </div>
       )}
+
       {/* Confirm Delete Modal */}
       {confirmModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
           <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
             <h3 className="text-lg font-bold mb-4">
-              Are you sure you want to delete this offer?
+              Are you sure you want to delete this item?
             </h3>
             <div className="flex justify-center gap-4">
               <button

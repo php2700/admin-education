@@ -26,12 +26,19 @@ import BenefitTables from "./pages/Tables/benefit";
 import WhyChooseTables from "./pages/Tables/whyChooseTab";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import OfferTables from "./pages/Tables/offer";
+import SuccessTables from "./pages/Tables/successTab";
+import TrustCredTables from "./pages/Tables/trustTab";
+import PlanTables from "./pages/Tables/planTab";
+import FooterBannerTables from "./pages/Tables/footerBanner";
+import PricingTables from "./pages/Tables/pricing";
+import MathTestTables from "./pages/Tables/mathTest";
+import TutoringTables from "./pages/Tables/tutoring";
 
 export default function App() {
   return (
     <>
-    <ToastContainer style={{ zIndex: 999999 }} />
+      <ToastContainer style={{ zIndex: 999999 }} />
       <Router>
         <ScrollToTop />
         <Routes>
@@ -40,12 +47,21 @@ export default function App() {
 
           <Route element={<AppLayout />}>
             <Route path="/home" element={<Home />} />
-            <Route path="/why-choose-us" element={<WhyChooseTables/>} />
+            <Route path="/banner" element={<BannerTables />} />
+
+            <Route path="/why-choose-us" element={<WhyChooseTables />} />
+            <Route path="/offers" element={<OfferTables />} />
+            <Route path="/success-story" element={<SuccessTables />} />
+            <Route path="/trust-credibility" element={<TrustCredTables />} />
+            <Route path="/plan" element={<PlanTables />} />
+            <Route path="/footer-banner" element={<FooterBannerTables />} />
+            <Route path="/pricing" element={<PricingTables />} />
+            <Route path="/math-test-prep" element={<MathTestTables/>} />
+            <Route path="/tutoring" element={<TutoringTables/>} />
+
 
             <Route path="/users" element={<UserTables />} />
-            <Route path="/banner" element={<BannerTables/>} />
             <Route path="/about" element={<AboutTables />} />
-
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />

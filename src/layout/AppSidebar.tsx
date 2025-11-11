@@ -33,27 +33,67 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     path: "/home ",
   },
- {
+  {
+    icon: <TableIcon />,
+    name: "Banner",
+    path: "/banner",
+  },
+  {
     icon: <TableIcon />,
     name: "Why Choose Us",
     path: "/why-choose-us",
+  },
+  {
+    icon: <TableIcon />,
+    name: "Offers",
+    path: "/offers",
+  },
+  {
+    icon: <TableIcon />,
+    name: "Success Story",
+    path: "/success-story",
+  },
+  {
+    icon: <TableIcon />,
+    name: "Trust Credibilty",
+    path: "/trust-credibility",
+  },
+  {
+    icon: <TableIcon />,
+    name: "Plan",
+    path: "/plan",
+  },
+  {
+    icon: <TableIcon />,
+    name: "Footer Banner",
+    path: "/footer-banner",
+  },
+  {
+    icon: <TableIcon />,
+    name: "Pricing",
+    path: "/pricing",
+  },
+  {
+    icon: <TableIcon />,
+    name: "Math Test Prep",
+    path: "/math-test-prep",
+  },
+  {
+    icon: <TableIcon />,
+    name: "Tutoring",
+    path: "/tutoring",
   },
   // {
   //   icon: <TableIcon />,
   //   name: "Users",
   //   path: "/users",
   // },
+
   //  {
-  //   icon: <TableIcon />,
-  //   name: "Banner",
-  //   path: "/banner",
-  // },
-//  {
-//     icon: <TableIcon />,
-//     name: "About",
-//     path: "/about",
-//   },
- 
+  //     icon: <TableIcon />,
+  //     name: "About",
+  //     path: "/about",
+  //   },
 ];
 
 const othersItems: NavItem[] = [];

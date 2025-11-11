@@ -1,62 +1,52 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FiUploadCloud } from "react-icons/fi";
-import { FaRegImage, FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-export default function WhyChoose() {
-  const [form, setForm] = useState({ title: "", description: "" });
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+export default function OfferTable() {
+  const [form, setForm] = useState({
+    type: "",
+    title: "",
+    description: "",
+    expireDate: "",
+  });
   const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [editId, setEditId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem("educationToken");
 
-  // handle input change
+  const typeOptions = ["new", "hot deal", "referral"];
+
+  // Handle form input change
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // file change
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file?.type.startsWith("image/")) {
-      setError("Please select a valid image file");
-      return;
-    }
-    setImage(file);
-    setPreview(URL.createObjectURL(file));
-    setError("");
-  };
-
-  // fetch list
+  // Fetch all offers
   const fetchList = async () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${import.meta.env.VITE_APP_URL}api/admin/why-choose`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `${import.meta.env.VITE_APP_URL}api/admin/offers`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setList(res.data.data || []);
     } catch (err) {
-      setError("Failed to fetch list");
+      toast.error("Failed to fetch offers");
     } finally {
       setLoading(false);
     }
   };
 
-  // add or edit
+  // Add or edit offer
   const handleSubmit = async () => {
-    if (!form.title || !form.description)
+    if (!form.type || !form.title || !form.description || !form.expireDate)
       return setError("All fields are required");
 
     try {
@@ -64,52 +54,39 @@ export default function WhyChoose() {
       setError("");
       setMessage("");
 
-      const formData = new FormData();
-      formData.append("title", form.title);
-      formData.append("description", form.description);
-      if (image) formData.append("image", image);
-
       let res;
       if (editId) {
-        formData.append("_id", editId);
+        form._id=editId
         res = await axios.patch(
-          `${import.meta.env.VITE_APP_URL}api/admin/why-choose/`,
-          formData,
+          `${import.meta.env.VITE_APP_URL}api/admin/offers/`,
+          form,
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
       } else {
         res = await axios.post(
-          `${import.meta.env.VITE_APP_URL}api/admin/why-choose`,
-          formData,
+          `${import.meta.env.VITE_APP_URL}api/admin/offers`,
+          form,
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
       }
 
-      setMessage(res.data.message || "Success!");
-      setTimeout(() => setMessage(""), 2000);
-      setForm({ title: "", description: "" });
-      setImage(null);
-      setPreview("");
+      toast.success(res.data.message || "Success!");
+      setForm({ type: "", title: "", description: "", expireDate: "" });
       setEditId(null);
       setShowModal(false);
       fetchList();
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      toast.error(err.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
+  // Delete confirmation
   const handleDeleteClick = (id) => {
     setDeleteId(id);
     setConfirmModal(true);
@@ -118,33 +95,34 @@ export default function WhyChoose() {
   const handleConfirmDelete = async () => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_APP_URL}api/admin/why-choose/${deleteId}`,
+        `${import.meta.env.VITE_APP_URL}api/admin/offers/${deleteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success("Item deleted successfully");
+      toast.success("Offer deleted successfully");
       fetchList();
     } catch (err) {
-      toast.error("Failed to delete item");
+      toast.error("Failed to delete offer");
     } finally {
       setConfirmModal(false);
       setDeleteId(null);
     }
   };
 
-  // open edit modal
-  const openEdit = (item) => {
-    setForm({ title: item.title, description: item.description });
-    setPreview(`${import.meta.env.VITE_APP_URL}${item.image}`);
-    setEditId(item._id);
+  // Open modals
+  const openAdd = () => {
+    setForm({ type: "", title: "", description: "", expireDate: "" });
+    setEditId(null);
     setShowModal(true);
   };
 
-  // open add modal
-  const openAdd = () => {
-    setForm({ title: "", description: "" });
-    setPreview("");
-    setImage(null);
-    setEditId(null);
+  const openEdit = (item) => {
+    setForm({
+      type: item.type,
+      title: item.title,
+      description: item.description,
+      expireDate: item.expireDate?.slice(0, 10),
+    });
+    setEditId(item._id);
     setShowModal(true);
   };
 
@@ -153,7 +131,7 @@ export default function WhyChoose() {
   }, []);
 
   return (
-    <div className=" bg-gray-50 p-8">
+    <div className="bg-gray-50 p-8">
       <div className="">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -161,7 +139,7 @@ export default function WhyChoose() {
             onClick={openAdd}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
-            + Add New
+            + Add 
           </button>
         </div>
 
@@ -181,46 +159,41 @@ export default function WhyChoose() {
         {loading ? (
           <p className="text-center">Loading...</p>
         ) : list.length === 0 ? (
-          <p className="text-center text-gray-500">No items found</p>
+          <p className="text-center text-gray-500">No offers found</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full border border-gray-200 text-left">
               <thead className="bg-blue-50">
                 <tr>
                   <th className="px-4 py-3 border-b text-gray-700">#</th>
-                  <th className="px-4 py-3 border-b text-gray-700">Image</th>
+                  <th className="px-4 py-3 border-b text-gray-700">Type</th>
                   <th className="px-4 py-3 border-b text-gray-700">Title</th>
                   <th className="px-4 py-3 border-b text-gray-700">
                     Description
                   </th>
-                  <th className="px-4 py-3 border-b text-gray-700 text-center">
+                  <th className="px-4 py-3 border-b text-gray-700">
+                    Expire Date
+                  </th>
+                  <th className="px-4 py-3 border-b text-center text-gray-700">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {list.map((item, index) => (
-                  <tr
-                    key={item._id}
-                    className="hover:bg-gray-50 transition-all"
-                  >
-                    <td className="px-4 py-3 border-b text-gray-700">
-                      {index + 1}
+                  <tr key={item._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 border-b">{index + 1}</td>
+                    <td className="px-4 py-3 border-b capitalize">
+                      {item.type}
+                    </td>
+                    <td className="px-4 py-3 border-b">{item.title}</td>
+                    <td className="px-4 py-3 border-b">
+                      {item.description.length > 80
+                        ? item.description.slice(0, 80) + "..."
+                        : item.description}
                     </td>
                     <td className="px-4 py-3 border-b">
-                      <img
-                        src={`${import.meta.env.VITE_APP_URL}${item.image}`}
-                        alt={item.title}
-                        className="w-16 h-16 object-cover rounded-lg border"
-                      />
-                    </td>
-                    <td className="px-4 py-3 border-b text-gray-800 font-medium">
-                      {item.title}
-                    </td>
-                    <td className="px-4 py-3 border-b text-gray-600">
-                      {item.description.length > 100
-                        ? item.description.slice(0, 100) + "..."
-                        : item.description}
+                      {new Date(item.expireDate).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 border-b text-center">
                       <button
@@ -256,42 +229,25 @@ export default function WhyChoose() {
             </button>
 
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
-              {editId ? "Edit Item" : "Add New Item"}
+              {editId ? "Edit Offer" : "Add New Offer"}
             </h3>
 
-            {/* Upload area */}
-            <div className="border-2 border-dashed border-blue-400 rounded-xl p-4 text-center mb-3 bg-blue-50 hover:bg-blue-100 transition-all">
-              <label
-                htmlFor="fileInput"
-                className="cursor-pointer flex flex-col items-center"
-              >
-                <FiUploadCloud className="text-3xl text-blue-500 mb-2" />
-                <span className="text-sm text-gray-700 font-medium">
-                  {image ? "Change Image" : "Click to Upload Image"}
-                </span>
-                <input
-                  id="fileInput"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </label>
-            </div>
+            {/* Type Dropdown */}
+            <select
+              name="type"
+              value={form.type}
+              onChange={handleChange}
+              className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
+            >
+              <option value="">Select Type</option>
+              {typeOptions.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
 
-            {/* Image Preview */}
-            {preview && (
-              <div className="flex justify-center mb-4">
-                <div className="rounded-xl overflow-hidden border border-gray-200   bg-gray-100">
-                  <img
-                    src={preview}
-                    alt="Preview"
-                    className="w-24 h-24 object-cover rounded"
-                  />
-                </div>
-              </div>
-            )}
-            {/* Title input */}
+            {/* Title Input */}
             <input
               type="text"
               name="title"
@@ -301,7 +257,7 @@ export default function WhyChoose() {
               className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
             />
 
-            {/* Description input */}
+            {/* Description Input */}
             <textarea
               name="description"
               value={form.description}
@@ -310,6 +266,15 @@ export default function WhyChoose() {
               className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
               rows={4}
             ></textarea>
+
+            {/* Expire Date */}
+            <input
+              type="date"
+              name="expireDate"
+              value={form.expireDate}
+              onChange={handleChange}
+              className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
+            />
 
             {/* Save Button */}
             <button
@@ -323,11 +288,12 @@ export default function WhyChoose() {
         </div>
       )}
 
+      {/* Confirm Delete Modal */}
       {confirmModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
             <h3 className="text-lg font-bold mb-4">
-              Are you sure you want to delete this item?
+              Are you sure you want to delete this offer?
             </h3>
             <div className="flex justify-center gap-4">
               <button
