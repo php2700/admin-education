@@ -34,6 +34,7 @@ import FooterBannerTables from "./pages/Tables/footerBanner";
 import PricingTables from "./pages/Tables/pricing";
 import MathTestTables from "./pages/Tables/mathTest";
 import TutoringTables from "./pages/Tables/tutoring";
+import BlogTables from "./pages/Tables/blog";
 
 export default function App() {
   return (
@@ -56,9 +57,9 @@ export default function App() {
             <Route path="/plan" element={<PlanTables />} />
             <Route path="/footer-banner" element={<FooterBannerTables />} />
             <Route path="/pricing" element={<PricingTables />} />
-            <Route path="/math-test-prep" element={<MathTestTables/>} />
-            <Route path="/tutoring" element={<TutoringTables/>} />
-
+            <Route path="/math-test-prep" element={<MathTestTables />} />
+            <Route path="/tutoring" element={<TutoringTables />} />
+            <Route path="/blog" element={<BlogTables />} />
 
             <Route path="/users" element={<UserTables />} />
             <Route path="/about" element={<AboutTables />} />

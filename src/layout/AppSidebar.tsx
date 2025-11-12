@@ -83,6 +83,11 @@ const navItems: NavItem[] = [
     name: "Tutoring",
     path: "/tutoring",
   },
+   {
+    icon: <TableIcon />,
+    name: "Blog",
+    path: "/blog",
+  }
   // {
   //   icon: <TableIcon />,
   //   name: "Users",
