@@ -34,39 +34,44 @@ const navItems: NavItem[] = [
     path: "/home ",
   },
   {
+    name: "Home",
     icon: <TableIcon />,
-    name: "Banner",
-    path: "/banner",
+    subItems: [
+      {
+        name: "Banner",
+        path: "/banner",
+      },
+      {
+        name: "Why Choose Us",
+        path: "/why-choose-us",
+      },
+      {
+        name: "Offers",
+        path: "/offers",
+      },
+      {
+        name: "Success Story",
+        path: "/success-story",
+      },
+      {
+        name: "Trust Credibilty",
+        path: "/trust-credibility",
+      },
+      {
+        name: "Plan",
+        path: "/plan",
+      },
+      {
+        name: "Footer Banner",
+        path: "/footer-banner",
+      },
+    ],
   },
+
   {
     icon: <TableIcon />,
-    name: "Why Choose Us",
-    path: "/why-choose-us",
-  },
-  {
-    icon: <TableIcon />,
-    name: "Offers",
-    path: "/offers",
-  },
-  {
-    icon: <TableIcon />,
-    name: "Success Story",
-    path: "/success-story",
-  },
-  {
-    icon: <TableIcon />,
-    name: "Trust Credibilty",
-    path: "/trust-credibility",
-  },
-  {
-    icon: <TableIcon />,
-    name: "Plan",
-    path: "/plan",
-  },
-  {
-    icon: <TableIcon />,
-    name: "Footer Banner",
-    path: "/footer-banner",
+    name: "Blog",
+    path: "/blog",
   },
   {
     icon: <TableIcon />,
@@ -74,20 +79,50 @@ const navItems: NavItem[] = [
     path: "/pricing",
   },
   {
+    name: "English",
     icon: <TableIcon />,
-    name: "Math Test Prep",
-    path: "/math-test-prep",
+    subItems: [
+      {
+        name: "About Ela",
+        path: "/about-ela",
+      },
+      {
+        name: "About Isee Test",
+        path: "/about-isee-test",
+      },
+      {
+        name: "Registration",
+        path: "/registration",
+      },
+    ],
   },
   {
+    name: "Maths",
     icon: <TableIcon />,
-    name: "Tutoring",
-    path: "/tutoring",
+    subItems: [
+      {
+        name: "Math Test Prep",
+        path: "/math-test-prep",
+      },
+      {
+        name: "Tutoring",
+        path: "/tutoring",
+      },
+      {
+        name: "Chapter",
+        path: "/chapter",
+      },
+      {
+        name: "Competition",
+        path: "/competition",
+      },
+      {
+        name: "Kangaroo",
+        path: "/Kangaroo",
+      },
+    ],
   },
-   {
-    icon: <TableIcon />,
-    name: "Blog",
-    path: "/blog",
-  }
+
   // {
   //   icon: <TableIcon />,
   //   name: "Users",
