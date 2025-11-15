@@ -41,6 +41,9 @@ import AboutElaTables from "./pages/Tables/aboutela";
 import ChapterTables from "./pages/Tables/chapter";
 import CompetitionTables from "./pages/Tables/competition";
 import KangarooTab from "./pages/Tables/kangaroo";
+import ScienceTab from "./pages/Tables/science";
+import CommonCoreElaTab from "./pages/Tables/coreTab";
+import LanguageTab from "./pages/Tables/languageTab";
 
 export default function App() {
   return (
@@ -66,12 +69,15 @@ export default function App() {
             <Route path="/math-test-prep" element={<MathTestTables />} />
             <Route path="/tutoring" element={<TutoringTables />} />
             <Route path="/blog" element={<BlogTables />} />
-            <Route path="/registration" element={<RegistrationTables/>} />
-            <Route path="/about-isee-test" element={<AboutIseeTables/>} />
-            <Route path="/about-ela" element={<AboutElaTables/>} />
-              <Route path="/chapter" element={<ChapterTables/>} />
-              <Route path="/competition" element={<CompetitionTables/>} />
-              <Route path="/Kangaroo" element={<KangarooTab/>} />
+            <Route path="/registration" element={<RegistrationTables />} />
+            <Route path="/about-isee-test" element={<AboutIseeTables />} />
+            <Route path="/about-ela" element={<AboutElaTables />} />
+            <Route path="/chapter" element={<ChapterTables />} />
+            <Route path="/competition" element={<CompetitionTables />} />
+            <Route path="/Kangaroo" element={<KangarooTab />} />
+            <Route path="/science" element={<ScienceTab />} />
+            <Route path="/common-core-ela" element={<CommonCoreElaTab/>} />
+            <Route path="/common-english-language" element={<LanguageTab/>} />
 
             <Route path="/users" element={<UserTables />} />
             <Route path="/about" element={<AboutTables />} />

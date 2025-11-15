@@ -83,6 +83,14 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     subItems: [
       {
+        name: "Common English Language",
+        path: "/common-english-language",
+      },
+      {
+        name: "Common Core Ela",
+        path: "/common-core-ela",
+      },
+      {
         name: "About Ela",
         path: "/about-ela",
       },
@@ -119,6 +127,10 @@ const navItems: NavItem[] = [
       {
         name: "Kangaroo",
         path: "/Kangaroo",
+      },
+      {
+        name: "Science",
+        path: "/science",
       },
     ],
   },
