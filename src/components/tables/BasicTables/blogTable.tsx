@@ -9,12 +9,16 @@ export default function BlogTab() {
   const [form, setForm] = useState({
     title: "",
     description: "",
+    type: "image",  // 🟢 NEW
   });
-  const [image, setImage] = useState(null);
+
+  const [file, setFile] = useState(null); // image or video both
   const [preview, setPreview] = useState("");
+
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState(null);
+
   const [showModal, setShowModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
@@ -23,39 +27,51 @@ export default function BlogTab() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+
+    // 🟢 If switching type, clear previous file + preview
+    if (e.target.name === "type") {
+      setFile(null);
+      setPreview("");
+    }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (!file?.type.startsWith("image/")) {
+
+    // 🟢 Validate based on type
+    if (form.type === "image" && !file?.type.startsWith("image/")) {
       toast.error("Please select a valid image file");
       return;
     }
-    setImage(file);
+
+    if (form.type === "video" && !file?.type.startsWith("video/")) {
+      toast.error("Please select a valid video file");
+      return;
+    }
+
+    setFile(file);
     setPreview(URL.createObjectURL(file));
   };
 
-  // Fetch all blog posts
   const fetchList = async () => {
     try {
       setLoading(true);
       const res = await axios.get(
         `${import.meta.env.VITE_APP_URL}api/admin/blog`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+
       setList(res.data.data || []);
-    } catch (err) {
+    } catch {
       toast.error("Failed to fetch blog list");
     } finally {
       setLoading(false);
     }
   };
 
-  // Add or Update blog
   const handleSubmit = async () => {
-    const { title, description } = form;
+    const { title, description, type } = form;
+
     if (!title || !description) {
       toast.error("All fields are required");
       return;
@@ -63,10 +79,15 @@ export default function BlogTab() {
 
     try {
       setLoading(true);
+
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
-      if (image) formData.append("image", image);
+      formData.append("type", type);
+
+      if (file) {
+        formData.append(type, file); // ⬅️ If type = "image" → append("image"), if "video" → append("video")
+      }
 
       let res;
       if (editId) {
@@ -96,8 +117,8 @@ export default function BlogTab() {
         toast.success("Blog added successfully");
       }
 
-      setForm({ title: "", description: "" });
-      setImage(null);
+      setForm({ title: "", description: "", type: "image" });
+      setFile(null);
       setPreview("");
       setEditId(null);
       setShowModal(false);
@@ -110,8 +131,8 @@ export default function BlogTab() {
   };
 
   const openAdd = () => {
-    setForm({ title: "", description: "" });
-    setImage(null);
+    setForm({ title: "", description: "", type: "image" });
+    setFile(null);
     setPreview("");
     setEditId(null);
     setShowModal(true);
@@ -121,8 +142,15 @@ export default function BlogTab() {
     setForm({
       title: item.title,
       description: item.description,
+      type: item.type, // 🟢 detect type (video/image)
     });
-    setPreview(`${import.meta.env.VITE_APP_URL}${item.image}`);
+
+    if (item.type === "image") {
+      setPreview(`${import.meta.env.VITE_APP_URL}${item.image}`);
+    } else {
+      setPreview(`${import.meta.env.VITE_APP_URL}${item.video}`);
+    }
+
     setEditId(item._id);
     setShowModal(true);
   };
@@ -136,9 +164,7 @@ export default function BlogTab() {
     try {
       await axios.delete(
         `${import.meta.env.VITE_APP_URL}api/admin/blog/${deleteId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Blog deleted successfully");
       fetchList();
@@ -185,13 +211,24 @@ export default function BlogTab() {
               {list?.map((item, index) => (
                 <tr key={item._id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 border-b">{index + 1}</td>
-                  <td className="px-4 py-3 border-b">
-                    <img
-                      src={`${import.meta.env.VITE_APP_URL}${item.image}`}
-                      alt={item.title}
-                      className="w-16 h-16 rounded-lg object-cover border"
-                    />
-                  </td>
+                 <td className="px-4 py-3 border-b">
+  {item.type === "image" && item.image ? (
+    <img
+      src={`${import.meta.env.VITE_APP_URL}${item.image}`}
+      alt={item.title}
+      className="w-20 h-20 rounded-lg object-cover border"
+    />
+  ) : item.type === "video" && item.video ? (
+    <video
+      src={`${import.meta.env.VITE_APP_URL}${item.video}`}
+      className="w-20 h-20 rounded-lg border"
+      controls
+    />
+  ) : (
+    <span>No Media</span>
+  )}
+</td>
+
                   <td className="px-4 py-3 border-b font-semibold text-gray-800">
                     {item.title}
                   </td>
@@ -220,47 +257,56 @@ export default function BlogTab() {
       )}
 
       {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md relative shadow-xl">
+     {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 " onClick={() => setShowModal(false)}>
+          <div className="bg-white p-6 rounded-xl w-full max-w-lg relative"  onClick={(e)=>e.stopPropagation()}>
+
             <button
-              className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+              className="absolute right-3 top-2"
               onClick={() => setShowModal(false)}
             >
               ✖
             </button>
 
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">
+            <h3 className="text-lg font-bold mb-4">
               {editId ? "Edit Blog" : "Add Blog"}
             </h3>
 
-            {/* Upload */}
-            <div className="border-2 border-dashed border-blue-400 rounded-xl p-4 text-center mb-3 bg-blue-50 hover:bg-blue-100">
-              <label
-                htmlFor="fileInput"
-                className="cursor-pointer flex flex-col items-center"
-              >
-                <FiUploadCloud className="text-3xl text-blue-500 mb-2" />
-                <span className="text-sm text-gray-700 font-medium">
-                  {image ? "Change Image" : "Click to Upload Image"}
+            <select
+              name="type"
+              value={form.type}
+              onChange={handleChange}
+              className="w-full mb-3 p-2 border rounded-lg"
+            >
+              <option value="image">Image</option>
+              <option value="video">Video</option>
+            </select>
+
+            {/* FILE UPLOADER */}
+            <div className="border-2 border-dashed p-4 rounded-xl mb-3 text-center">
+              <label htmlFor="fileInput" className="cursor-pointer">
+                <FiUploadCloud className="text-3xl mx-auto mb-2" />
+                <span className="text-sm">
+                  {file ? "Change File" : `Upload ${form.type}`}
                 </span>
-                <input
-                  id="fileInput"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
               </label>
+              <input
+                id="fileInput"
+                type="file"
+                accept={form.type === "image" ? "image/*" : "video/*"}
+                onChange={handleFileChange}
+                className="hidden"
+              />
             </div>
 
+            {/* Preview */}
             {preview && (
-              <div className="flex justify-center mb-4">
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="w-full object-cover rounded-xl border"
-                />
+              <div className="mb-3">
+                {form.type === "image" ? (
+                  <img src={preview} className="rounded-xl" />
+                ) : (
+                  <video src={preview} controls className="rounded-xl" />
+                )}
               </div>
             )}
 
@@ -269,27 +315,28 @@ export default function BlogTab() {
               name="title"
               value={form.title}
               onChange={handleChange}
-              placeholder="Enter blog title"
-              className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
+              placeholder="Title"
+              className="w-full p-2 border rounded-lg mb-3"
             />
+
             <textarea
               name="description"
               value={form.description}
               onChange={handleChange}
-              placeholder="Enter blog description"
-              className="w-full mb-3 p-3 border border-gray-300 rounded-xl h-32 resize-none"
+              placeholder="Description"
+              className="w-full p-2 border rounded-lg mb-3 h-32"
             />
 
             <button
               onClick={handleSubmit}
-              disabled={loading}
-              className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700"
+              className="bg-blue-600 text-white w-full py-2 rounded-lg"
             >
               {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </div>
       )}
+
 
       {/* Delete Confirmation */}
       {confirmModal && (
