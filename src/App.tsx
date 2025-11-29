@@ -44,6 +44,9 @@ import KangarooTab from "./pages/Tables/kangaroo";
 import ScienceTab from "./pages/Tables/science";
 import CommonCoreElaTab from "./pages/Tables/coreTab";
 import LanguageTab from "./pages/Tables/languageTab";
+import TestImoTables from "./pages/Tables/testImonial";
+import FaqTables from "./pages/Tables/faq";
+import ContactText from "./pages/Tables/contact";
 
 export default function App() {
   return (
@@ -78,9 +81,12 @@ export default function App() {
             <Route path="/science" element={<ScienceTab />} />
             <Route path="/common-core-ela" element={<CommonCoreElaTab/>} />
             <Route path="/common-english-language" element={<LanguageTab/>} />
+            <Route path="/about" element={<AboutTables />} />
+            <Route path="/testImonial" element={<TestImoTables/>} />
+            <Route path="/faq" element={<FaqTables/>} />
+            <Route path="/contact-text" element={<ContactText/>} />
 
             <Route path="/users" element={<UserTables />} />
-            <Route path="/about" element={<AboutTables />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />

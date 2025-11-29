@@ -2,240 +2,219 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FiUploadCloud } from "react-icons/fi";
-import { MdOutlineDescription } from "react-icons/md";
 import { FaRegImage } from "react-icons/fa";
 
 export default function About() {
-      const [form, setForm] = useState({ title: "", description: "" });
-      const [image, setImage] = useState(null);
-      const [preview, setPreview] = useState("");
-      const [loading, setLoading] = useState(false);
-      const [message, setMessage] = useState("");
-      const [error, setError] = useState("");
-      const token = localStorage.getItem("educationToken");
-      const handleChange = (e) => {
-            setForm({ ...form, [e.target.name]: e.target.value });
-      };
+    const [form, setForm] = useState({
+        description: [""],
+        whyUsDescription: [""],
+        howDiffrentDescription: [""],
+        safetyDescription: [""],
+        tutorDescription: "",
+    });
 
-      const handleFileChange = (e) => {
-            const file = e.target.files[0];
-            if (!file?.type.startsWith("image/")) {
-                  setError("Please select a valid image file");
-                  return;
-            }
-            setImage(file);
-            setPreview(URL.createObjectURL(file));
+    const [image, setImage] = useState(null);
+    const [preview, setPreview] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
+    const token = localStorage.getItem("educationToken");
+
+    const handleArrayChange = (field, index, value) => {
+        const updated = [...form[field]];
+        updated[index] = value;
+        setForm({ ...form, [field]: updated });
+    };
+
+    const addArrayItem = (field) => {
+        setForm({ ...form, [field]: [...form[field], ""] });
+    };
+
+    const removeArrayItem = (field, index) => {
+        const updated = [...form[field]];
+        updated.splice(index, 1);
+        setForm({ ...form, [field]: updated });
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (!file?.type.startsWith("image/")) {
+            setError("Please select a valid image");
+            return;
+        }
+        setImage(file);
+        setPreview(URL.createObjectURL(file));
+        setError("");
+    };
+
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
             setError("");
-      };
 
-      const handleSubmit = async () => {
-            if (!form.title || !form.description)
-                  return setError("All fields are required");
+            const formData = new FormData();
+            formData.append("tutorDescription", form.tutorDescription);
+            formData.append("description", JSON.stringify(form.description));
+            formData.append("whyUsDescription", JSON.stringify(form.whyUsDescription));
+            formData.append("howDiffrentDescription", JSON.stringify(form.howDiffrentDescription));
+            formData.append("safetyDescription", JSON.stringify(form.safetyDescription));
+            if (image) formData.append("image", image);
 
-            try {
-                  setLoading(true);
-                  setError("");
-                  setMessage("");
+            const res = await axios.post(
+                `${import.meta.env.VITE_APP_URL}api/admin/about`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-                  const formData = new FormData();
-                  formData.append("title", form.title);
-                  formData.append("description", form.description);
-                  if (image) formData.append("image", image);
+            setMessage("Saved successfully");
+            setTimeout(() => setMessage(""), 2000);
 
-                  const res = await axios.post(
-                        `${import.meta.env.VITE_APP_URL}api/admin/about`,
-                        formData,
-                        {
-                              headers: {
-                                    "Content-Type": "multipart/form-data",
-                                    Authorization: `Bearer ${token}`,
-                              },
-                        }
-                  );
-
-                  setMessage(res.data.message);
-                  setTimeout(() => {
-                        setMessage("");
-                  }, 2000);
-                  if (res.data.data.image)
-                        setPreview(
-                              `${import.meta.env.VITE_APP_URL}${
-                                    res.data.data.image
-                              }`
-                        );
-            } catch (err) {
-                  setError(
-                        err.response?.data?.message || "Something went wrong"
-                  );
-            } finally {
-                  setLoading(false);
+            if (res.data.data?.image) {
+                setPreview(`${import.meta.env.VITE_APP_URL}${res.data.data.image}`);
             }
-      };
+        } catch (err) {
+            setError("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      const getaboutData = async () => {
-            try {
-                  setLoading(true);
-                  setError("");
-                  setMessage("");
-                  if (!token) {
-                        setError(
-                              "Authentication token missing. Please log in again."
-                        );
-                        return;
-                  }
-                  const res = await axios.get(
-                        `${import.meta.env.VITE_APP_URL}api/admin/about`,
-                        {
-                              headers: {
-                                    Authorization: `Bearer ${token}`,
-                              },
-                        }
-                  );
-                  if (res.data?.data) {
-                        const aboutData = res.data.data;
-                        setForm({
-                              title: aboutData.title || "",
-                              description: aboutData.description || "",
-                        });
-                        if (aboutData?.image) {
-                              setPreview(
-                                    `${import.meta.env.VITE_APP_URL}${
-                                          aboutData.image
-                                    }`
-                              );
-                        }
-                        setMessage("About data loaded successfully!");
-                        setTimeout(() => {
-                              setMessage("");
-                        }, 2000);
-                  }
-            } catch (error) {
-                  setError("Failed to load About data.");
-            } finally {
-                  setLoading(false);
+    const getAboutData = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get(
+                `${import.meta.env.VITE_APP_URL}api/admin/about`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            if (res.data?.data) {
+                const d = res.data.data;
+
+                setForm({
+                    description: d.description || [""],
+                    whyUsDescription: d.whyUsDescription || [""],
+                    howDiffrentDescription: d.howDiffrentDescription || [""],
+                    safetyDescription: d.safetyDescription || [""],
+                    tutorDescription: d.tutorDescription || "",
+                });
+
+                if (d.image) {
+                    setPreview(`${import.meta.env.VITE_APP_URL}${d.image}`);
+                }
             }
-      };
+        } catch (err) {
+            setError("Failed to load About data");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      useEffect(() => {
-            getaboutData();
-      }, []);
+    useEffect(() => {
+        getAboutData();
+    }, []);
 
-      return (
-            <div className="  from-indigo-100 via-white to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-6">
-                  <div className="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 space-y-6 transform transition-all duration-500 ">
-                        {/* Title */}
-                        {/* Alerts */}
-                        {error && (
-                              <div className="text-center bg-red-100 text-red-700 font-medium p-3 rounded-xl">
-                                    {error}
-                              </div>
-                        )}
-                        {message && !error && (
-                              <div className="text-center bg-green-100 text-green-700 font-medium p-3 rounded-xl">
-                                    {message}
-                              </div>
-                        )}
-                        <div className="relative">
-                              <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">
-                                    Title
-                              </label>
-                              <input
+    return (
+        <div className="flex items-center justify-center p-6">
+            <div className="w-full max-w-3xl bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 space-y-6">
+                
+                {/* Alerts */}
+                {error && (
+                    <div className="bg-red-200 text-red-700 p-3 rounded-xl text-center font-semibold">
+                        {error}
+                    </div>
+                )}
+                {message && (
+                    <div className="bg-green-200 text-green-700 p-3 rounded-xl text-center font-semibold">
+                        {message}
+                    </div>
+                )}
+
+                {/* Upload Image */}
+                <div className="border-2 border-dashed border-blue-400 p-6 rounded-xl text-center">
+                    <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center">
+                        <FiUploadCloud className="text-4xl text-blue-600" />
+                        <p>{image ? "Change Image" : "Upload Image"}</p>
+                    </label>
+                    <input id="fileInput" type="file" className="hidden" onChange={handleFileChange} />
+                </div>
+
+                {/* Preview */}
+                {preview && (
+                    <div className="bg-gray-200 rounded-xl overflow-hidden shadow">
+                        <div className="bg-blue-600 text-white p-3 flex gap-2 items-center">
+                            <FaRegImage /> <span>Preview</span>
+                        </div>
+                        <img src={preview} className="w-full h-64 object-cover" />
+                    </div>
+                )}
+
+                {/* Dynamic Array Fields */}
+                {[
+                    { key: "description", label: "Description" },
+                    { key: "whyUsDescription", label: "Why Us Description" },
+                    { key: "howDiffrentDescription", label: "How Different Description" },
+                    { key: "safetyDescription", label: "Safety Description" },
+                ].map((field) => (
+                    <div key={field.key}>
+                        <label className="font-semibold text-gray-700">{field.label}</label>
+                        {form[field.key].map((val, idx) => (
+                            <div key={idx} className="flex items-center gap-3 mt-2">
+                                <input
                                     type="text"
-                                    name="title"
-                                    value={form.title}
-                                    onChange={handleChange}
-                                    placeholder="Enter title..."
-                                    className="w-full p-3  border border-gray-300 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-300"
-                              />
-                        </div>
-
-                        {/* Description */}
-                        <div>
-                              <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">
-                                    Description
-                              </label>
-                              <textarea
-                                    name="description"
-                                    value={form.description}
-                                    onChange={handleChange}
-                                    placeholder="Enter description..."
-                                    className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-300"
-                                    rows={4}
-                              ></textarea>
-                        </div>
-
-                        {/* Upload Image */}
-                        <div className="flex flex-col items-center justify-center border-2 border-dashed border-blue-400 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 cursor-pointer hover:shadow-lg transition-all duration-300">
-                              <label
-                                    htmlFor="fileInput"
-                                    className="flex flex-col items-center"
-                              >
-                                    <FiUploadCloud className="text-4xl text-blue-500 mb-2" />
-                                    <p className="text-gray-600 dark:text-gray-300 text-sm">
-                                          {image
-                                                ? "Change Image"
-                                                : "Click to Upload Image"}
-                                    </p>
-                                    <input
-                                          id="fileInput"
-                                          type="file"
-                                          accept="image/*"
-                                          onChange={handleFileChange}
-                                          className="hidden"
-                                    />
-                              </label>
-                        </div>
-
-                        {/* Preview */}
-                        {preview && (
-                              <div className="mt-4 bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg">
-                                    <div className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold p-3">
-                                          <FaRegImage />
-                                          <span>Preview</span>
-                                    </div>
-                                    <img
-                                          src={preview}
-                                          alt="Preview"
-                                          className="w-full h-64 object-cover rounded-b-2xl"
-                                    />
-                              </div>
-                        )}
-
-                        {/* Button */}
+                                    value={val}
+                                    onChange={(e) =>
+                                        handleArrayChange(field.key, idx, e.target.value)
+                                    }
+                                    className="w-full p-3 border rounded-xl"
+                                />
+                                {idx !== 0 && (
+                                    <button
+                                        onClick={() => removeArrayItem(field.key, idx)}
+                                        className="bg-red-500 text-white px-3 py-1 rounded-lg"
+                                    >
+                                        -
+                                    </button>
+                                )}
+                            </div>
+                        ))}
                         <button
-                              onClick={handleSubmit}
-                              disabled={loading}
-                              className="w-full py-3 rounded-2xl font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 flex justify-center items-center gap-2"
+                            onClick={() => addArrayItem(field.key)}
+                            className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-xl"
                         >
-                              {loading ? (
-                                    <>
-                                          <svg
-                                                className="animate-spin h-5 w-5 text-white"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                          >
-                                                <circle
-                                                      className="opacity-25"
-                                                      cx="12"
-                                                      cy="12"
-                                                      r="10"
-                                                      stroke="currentColor"
-                                                      strokeWidth="4"
-                                                ></circle>
-                                                <path
-                                                      className="opacity-75"
-                                                      fill="currentColor"
-                                                      d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
-                                                ></path>
-                                          </svg>
-                                          Saving...
-                                    </>
-                              ) : (
-                                    "Save"
-                              )}
+                            + Add More
                         </button>
-                  </div>
+                    </div>
+                ))}
+
+                {/* Tutor Description */}
+                <div>
+                    <label className="font-semibold text-gray-700">Tutor Description</label>
+                    <textarea
+                        value={form.tutorDescription}
+                        onChange={(e) =>
+                            setForm({ ...form, tutorDescription: e.target.value })
+                        }
+                        className="w-full p-3 border rounded-xl"
+                        rows="3"
+                    />
+                </div>
+
+                {/* Submit */}
+                <button
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold"
+                >
+                    {loading ? "Saving..." : "Save"}
+                </button>
             </div>
-      );
+        </div>
+    );
 }

@@ -1,19 +1,19 @@
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
 import PageMeta from "../../components/common/PageMeta";
-import UserTable from "../../components/tables/BasicTables/userTable";
+import TestImonial from "../../components/tables/BasicTables/testImo";
 
-export default function UserTables() {
+export default function TestImoTables() {
   return (
     <>
       <PageMeta
-        title="User List"
-        description="User List"
+        title="about"
+        description="about"
       />
-      <PageBreadcrumb pageTitle="User List" />
+      <PageBreadcrumb pageTitle="TestImonial" />
       <div className="space-y-6">
-        <ComponentCard title="users">
-          <UserTable />
+        <ComponentCard title="TestImonial">
+          <TestImonial />
         </ComponentCard>
       </div>
     </>
