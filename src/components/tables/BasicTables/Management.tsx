@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEvent } from "react";
+import  { useEffect, useState, ChangeEvent } from "react";
 import axios from "axios";
 import { FaEdit, FaTrashAlt, FaPlus, FaTimes, FaCloudUploadAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
