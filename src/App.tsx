@@ -47,6 +47,9 @@ import LanguageTab from "./pages/Tables/languageTab";
 import TestImoTables from "./pages/Tables/testImonial";
 import FaqTables from "./pages/Tables/faq";
 import ContactText from "./pages/Tables/contact";
+import TermsTabs from "./pages/Tables/terms"
+import Managements from "./pages/Tables/managmentTab"
+import Testpres from "./pages/Tables/testpreTab"
 
 export default function App() {
   return (
@@ -84,6 +87,9 @@ export default function App() {
             <Route path="/about" element={<AboutTables />} />
             <Route path="/testImonial" element={<TestImoTables/>} />
             <Route path="/faq" element={<FaqTables/>} />
+            <Route path="/terms -services" element={<TermsTabs/>} />
+            <Route path="/Our-Managments" element={<Managements/>} />
+            <Route path="/Testprepration" element={<Testpres/>} />
             <Route path="/contact-text" element={<ContactText/>} />
 
             <Route path="/users" element={<UserTables />} />
