@@ -174,8 +174,36 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     subItems: [
       {
-        name: "SAT Prep",
-        path: "/SAT-Prep",
+        name: "TestPrepDetails",
+        path: "/TestPrepDetails", 
+      },
+     {
+        name: "SSATtestDetails",
+        path: "/SSATtestDetails",   
+      },
+       {
+        name: "SHSATtestDetails",
+        path: "/SHSATtestDetails",   
+      },
+        {
+        name: "ISEEtestDetails",
+        path: "/ISEEtestDetails",   
+      },
+       {
+        name: "ELAtestDetails",
+        path: "/ELAtestDetails",   
+      },
+         {
+        name: "ScatTestPrepAdmin",
+        path: "/ScatTestPrepAdmin",   
+      },
+        {
+        name: "AMCtestDetails",
+        path: "/AMCtestDetails",   
+      },
+        {
+        name: "KangarooDetails",
+        path: "/KangarooDetails",   
       },
      
     ],
