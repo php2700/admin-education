@@ -181,6 +181,10 @@ const navItems: NavItem[] = [
         name: "SSATtestDetails",
         path: "/SSATtestDetails",   
       },
+      {
+        name: "PSATtestDetails",
+        path: "/PSATtestDetails",   
+      },
        {
         name: "SHSATtestDetails",
         path: "/SHSATtestDetails",   
@@ -212,7 +216,21 @@ const navItems: NavItem[] = [
         {
         name: "COGATtestDetails",
         path: "/COGATtestDetails",   
+      },
+        {
+        name: "SBACtestDetails",
+        path: "/SBACtestDetails",   
+      },
+       {
+        name: "AccuplacerDetails",
+        path: "/AccuplacerDetails",   
       }
+      ,
+       {
+        name: "STBTtestDetails",
+        path: "/STBTtestDetails",   
+      }
+      
      
     ],
   },

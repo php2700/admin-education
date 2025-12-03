@@ -94,7 +94,7 @@ export default function MathKangarooTestPrepAdmin() {
   return (
     <div className="bg-gray-50 p-6 flex flex-col items-center min-h-screen">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-5xl border-t-4 border-blue-600 p-8">
-        <h2 className="text-3xl font-bold text-center mb-8 text-blue-800">Math Kangaroo Admin</h2>
+        <h2 className="text-3xl font-bold text-center mb-8 text-blue-800">Math Kangaroo PreTest Section</h2>
 
         {/* --- 1. HERO --- */}
         <div className="mb-6 border-b pb-6">
