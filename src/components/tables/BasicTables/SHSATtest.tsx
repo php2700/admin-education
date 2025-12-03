@@ -108,7 +108,7 @@ export default function ShsatTestPrepAdmin() {
   return (
     <div className="bg-gray-50 p-6 flex flex-col items-center min-h-screen">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-4xl border-t-4 border-blue-600 p-8">
-        <h2 className="text-3xl font-bold text-center mb-8 text-blue-800">SHSAT Page Admin</h2>
+        <h2 className="text-3xl font-bold text-center mb-8 text-blue-800">SHSAT PreTest Section</h2>
 
         {/* --- SECTION 1: HERO / TOP --- */}
         <div className="mb-8 border-b pb-6">

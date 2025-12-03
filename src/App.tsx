@@ -61,6 +61,9 @@ import KangarooDetails from "./pages/Tables/KangarooTestTab"
 import ACTtestDetails from "./pages/Tables/ActTestTab"
 import COGATtestDetails from "./pages/Tables/CogatTestTab"
 import SBACtestDetails from "./pages/Tables/SBACTestTab"
+import AccuplacerDetails from "./pages/Tables/AccuplacerTab"
+import STBTtestDetails from "./pages/Tables/STBTestTab"
+import PSATtestDetails from "./pages/Tables/PSATTab"
 export default function App() {
   return (
     <>
@@ -112,6 +115,11 @@ export default function App() {
              <Route path="/ACTtestDetails" element={<ACTtestDetails/>} /> 
              <Route path="/COGATtestDetails" element={<COGATtestDetails/>} /> 
              <Route path="/SBACtestDetails" element={<SBACtestDetails/>} /> 
+             <Route path="/AccuplacerDetails" element={<AccuplacerDetails/>} /> 
+             <Route path="/STBTtestDetails" element={<STBTtestDetails/>} /> 
+             <Route path="/PSATtestDetails" element={<PSATtestDetails/>} /> 
+
+
 
 
 

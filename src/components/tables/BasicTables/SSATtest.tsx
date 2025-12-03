@@ -122,7 +122,7 @@ export default function SSATtestpage() {
       <div className="bg-white rounded-xl shadow-lg w-full max-w-6xl border-t-4 border-blue-600 p-8">
         
         <div className="flex justify-between items-center mb-8 border-b pb-4">
-            <h2 className="text-3xl font-bold text-blue-800">SSAT Page Manager</h2>
+            <h2 className="text-3xl font-bold text-blue-800">SSAT PreTest Section</h2>
             <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">
                 {loading ? "Syncing..." : "Edit Mode Active"}
             </span>
