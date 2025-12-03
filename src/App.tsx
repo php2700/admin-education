@@ -50,7 +50,17 @@ import ContactText from "./pages/Tables/contact";
 import TermsTabs from "./pages/Tables/terms"
 import Managements from "./pages/Tables/managmentTab"
 import Testpres from "./pages/Tables/testpreTab"
-
+import TestPrepDetails from "./pages/Tables/testdetailsTab"
+import SSATtestDetails from "./pages/Tables/SSATtestTab" 
+import SHSATtestDetails from "./pages/Tables/SHSATtestTab"  
+import ISEEtestDetails from "./pages/Tables/IseeTestTab"
+import ELAtestDetails from "./pages/Tables/ELAtestTab"
+import ScatTestPrepAdmin from "./pages/Tables/ScatTestTab"
+import AMCtestDetails from "./pages/Tables/AmcTestTab"
+import KangarooDetails from "./pages/Tables/KangarooTestTab"
+import ACTtestDetails from "./pages/Tables/ActTestTab"
+import COGATtestDetails from "./pages/Tables/CogatTestTab"
+import SBACtestDetails from "./pages/Tables/SBACTestTab"
 export default function App() {
   return (
     <>
@@ -91,6 +101,25 @@ export default function App() {
             <Route path="/Our-Managments" element={<Managements/>} />
             <Route path="/Testprepration" element={<Testpres/>} />
             <Route path="/contact-text" element={<ContactText/>} />
+            <Route path="/TestPrepDetails" element={<TestPrepDetails/>} />
+            <Route path="/SSATtestDetails" element={<SSATtestDetails/>} /> 
+            <Route path="/SHSATtestDetails" element={<SHSATtestDetails/>} />
+            <Route path="/ISEEtestDetails" element={<ISEEtestDetails/>} /> 
+            <Route path="/ELAtestDetails" element={<ELAtestDetails/>} /> 
+            <Route path="/ScatTestPrepAdmin" element={<ScatTestPrepAdmin/>} /> 
+            <Route path="/AMCtestDetails" element={<AMCtestDetails/>} /> 
+             <Route path="/KangarooDetails" element={<KangarooDetails/>} /> 
+             <Route path="/ACTtestDetails" element={<ACTtestDetails/>} /> 
+             <Route path="/COGATtestDetails" element={<COGATtestDetails/>} /> 
+             <Route path="/SBACtestDetails" element={<SBACtestDetails/>} /> 
+
+
+
+
+
+
+
+
 
             <Route path="/users" element={<UserTables />} />
 
