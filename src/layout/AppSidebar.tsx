@@ -205,6 +205,14 @@ const navItems: NavItem[] = [
         name: "KangarooDetails",
         path: "/KangarooDetails",   
       },
+          {
+        name: "ACTtestDetails",
+        path: "/ACTtestDetails",   
+      },
+        {
+        name: "COGATtestDetails",
+        path: "/COGATtestDetails",   
+      }
      
     ],
   },

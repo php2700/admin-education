@@ -58,6 +58,9 @@ import ELAtestDetails from "./pages/Tables/ELAtestTab"
 import ScatTestPrepAdmin from "./pages/Tables/ScatTestTab"
 import AMCtestDetails from "./pages/Tables/AmcTestTab"
 import KangarooDetails from "./pages/Tables/KangarooTestTab"
+import ACTtestDetails from "./pages/Tables/ActTestTab"
+import COGATtestDetails from "./pages/Tables/CogatTestTab"
+import SBACtestDetails from "./pages/Tables/SBACTestTab"
 export default function App() {
   return (
     <>
@@ -106,6 +109,12 @@ export default function App() {
             <Route path="/ScatTestPrepAdmin" element={<ScatTestPrepAdmin/>} /> 
             <Route path="/AMCtestDetails" element={<AMCtestDetails/>} /> 
              <Route path="/KangarooDetails" element={<KangarooDetails/>} /> 
+             <Route path="/ACTtestDetails" element={<ACTtestDetails/>} /> 
+             <Route path="/COGATtestDetails" element={<COGATtestDetails/>} /> 
+             <Route path="/SBACtestDetails" element={<SBACtestDetails/>} /> 
+
+
+
 
 
 
