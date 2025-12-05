@@ -22,21 +22,28 @@ export default function WhyChoose() {
 
   const token = localStorage.getItem("educationToken");
 
+  const countWords = (text) => {
+    if (!text) return 0;
+    return text.trim().split(/\s+/).filter((word) => word !== "").length;
+  };
+
   // handle input change
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    if (error) setError("");
+    if (modalError) setModalError("");
   };
 
   // file change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file?.type.startsWith("image/")) {
-      setError("Please select a valid image file");
+      setModalError("Please select a valid image file");
       return;
     }
     setImage(file);
     setPreview(URL.createObjectURL(file));
-    setError("");
+    setModalError("");
   };
 
   // fetch list
@@ -59,18 +66,28 @@ export default function WhyChoose() {
 
   // add or edit
   const handleSubmit = async () => {
-    setModalError("All fields are required");
+    // 1. Fixed Validation Logic
     if (!form.title || !form.description) {
+      setModalError("All fields are required");
       setTimeout(() => {
         setModalError("");
       }, 3000);
       return;
     }
 
+    const currentWordCount = countWords(form.description);
+
+    if (currentWordCount > 250) {
+      setModalError(
+        `Description exceeds limit! Current: ${currentWordCount} words. Max allowed: 250.`
+      );
+      return;
+    }
+
     try {
       setLoading(true);
-      setError("");
-      setMessage("");
+      setModalError("");
+      setModalMessage("");
 
       const formData = new FormData();
       formData.append("title", form.title);
@@ -102,7 +119,8 @@ export default function WhyChoose() {
           }
         );
       }
-      setModalMessage(editId ? `Added Success! ` : `Edit Successfully`);
+      setModalMessage(editId ? `Edited Successfully` : `Added Successfully`);
+      
       setTimeout(() => {
         setForm({ title: "", description: "" });
         setImage(null);
@@ -114,7 +132,7 @@ export default function WhyChoose() {
       }, 1500);
     } catch (err) {
       setModalError(
-        err?.response.data?.message || err?.message || "Failed to save benefit."
+        err?.response?.data?.message || err?.message || "Failed to save item."
       );
       setTimeout(() => {
         setModalError("");
@@ -151,6 +169,7 @@ export default function WhyChoose() {
     setPreview(`${import.meta.env.VITE_APP_URL}${item.image}`);
     setEditId(item._id);
     setShowModal(true);
+    setModalError("");
   };
 
   // open add modal
@@ -160,14 +179,19 @@ export default function WhyChoose() {
     setImage(null);
     setEditId(null);
     setShowModal(true);
+    setModalError("");
   };
 
   useEffect(() => {
     fetchList();
   }, []);
 
+  // Calculate words for the render logic
+  const currentCount = countWords(form.description);
+  const isOverLimit = currentCount > 250;
+
   return (
-    <div className=" bg-gray-50 p-8">
+    <div className="bg-gray-50 p-8">
       <div className="">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -192,7 +216,7 @@ export default function WhyChoose() {
         )}
 
         {/* Table List */}
-        {loading ? (
+        {loading && !showModal ? (
           <p className="text-center">Loading...</p>
         ) : list.length === 0 ? (
           <p className="text-center text-gray-500">No items found</p>
@@ -283,6 +307,7 @@ export default function WhyChoose() {
                 {modalMessage}
               </div>
             )}
+            
             {/* Upload area */}
             <div className="border-2 border-dashed border-blue-400 rounded-xl p-4 text-center mb-3 bg-blue-50 hover:bg-blue-100 transition-all">
               <label
@@ -306,7 +331,7 @@ export default function WhyChoose() {
             {/* Image Preview */}
             {preview && (
               <div className="flex justify-center mb-4">
-                <div className="rounded-xl overflow-hidden border border-gray-200   bg-gray-100">
+                <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-100">
                   <img
                     src={preview}
                     alt="Preview"
@@ -315,6 +340,7 @@ export default function WhyChoose() {
                 </div>
               </div>
             )}
+            
             {/* Title input */}
             <input
               type="text"
@@ -331,15 +357,32 @@ export default function WhyChoose() {
               value={form.description}
               onChange={handleChange}
               placeholder="Enter description..."
-              className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
+              className={`w-full p-3 border rounded-xl ${
+                isOverLimit
+                  ? "border-red-500 focus:outline-red-500 bg-red-50"
+                  : "border-gray-300"
+              }`}
               rows={4}
             ></textarea>
+            <div className="flex justify-end mt-1 mb-3">
+              <span
+                className={`text-xs font-bold ${
+                  isOverLimit ? "text-red-600" : "text-gray-500"
+                }`}
+              >
+                Word Count: {currentCount} / 250
+              </span>
+            </div>
 
-            {/* Save Button */}
+            {/* 2. Fixed Save Button */}
             <button
               onClick={handleSubmit}
-              disabled={loading}
-              className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all"
+              disabled={loading || isOverLimit}
+              className={`w-full py-2 text-white rounded-xl transition-all ${
+                loading || isOverLimit
+                  ? "bg-gray-400 cursor-not-allowed opacity-70"
+                  : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+              }`}
             >
               {loading ? "Saving..." : "Save"}
             </button>
