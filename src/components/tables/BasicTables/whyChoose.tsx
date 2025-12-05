@@ -18,10 +18,19 @@ export default function WhyChoose() {
   const [deleteId, setDeleteId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem("educationToken");
+   const countWords = (text) => {
+
+    if (!text) return 0;
+
+    return text.trim().split(/\s+/).filter((word) => word !== "").length;
+
+  };
+
 
   // handle input change
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+     if (error) setError("");
   };
 
   // file change
@@ -58,6 +67,19 @@ export default function WhyChoose() {
   const handleSubmit = async () => {
     if (!form.title || !form.description)
       return setError("All fields are required");
+    const currentWordCount = countWords(form.description);
+
+   
+
+    if (currentWordCount > 250) {
+
+      // Agar 250 se jyada hai to yahi ruk jao (return)
+
+      setError(`Description exceeds limit! Current: ${currentWordCount} words. Max allowed: 250.`);
+
+      return; // SAVE NAHI HOGA
+
+    }
 
     try {
       setLoading(true);
@@ -137,6 +159,7 @@ export default function WhyChoose() {
     setPreview(`${import.meta.env.VITE_APP_URL}${item.image}`);
     setEditId(item._id);
     setShowModal(true);
+    setError("");
   };
 
   // open add modal
@@ -146,11 +169,15 @@ export default function WhyChoose() {
     setImage(null);
     setEditId(null);
     setShowModal(true);
+    setError("");
   };
 
   useEffect(() => {
     fetchList();
   }, []);
+   const currentCount = countWords(form.description);
+
+  const isOverLimit = currentCount > 250;
 
   return (
     <div className=" bg-gray-50 p-8">
@@ -307,15 +334,28 @@ export default function WhyChoose() {
               value={form.description}
               onChange={handleChange}
               placeholder="Enter description..."
-              className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
+              className={`w-full p-3 border rounded-xl ${
+
+                    isOverLimit ? "border-red-500 focus:outline-red-500 bg-red-50" : "border-gray-300"
+
+                }`}
               rows={4}
             ></textarea>
+             <div className="flex justify-end mt-1">
+
+                <span className={`text-xs font-bold ${isOverLimit ? "text-red-600" : "text-gray-500"}`}>
+
+                  Word Count: {currentCount} / 250
+
+                </span>
+
+              </div>
 
             {/* Save Button */}
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all"
+              className="w-full py-2 bg-gradient-to-r from-blue-600  cursor-not-allowed to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all"
             >
               {loading ? "Saving..." : "Save"}
             </button>
