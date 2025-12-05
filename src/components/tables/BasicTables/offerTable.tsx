@@ -20,6 +20,8 @@ export default function OfferTable() {
   const [confirmModal, setConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const token = localStorage.getItem("educationToken");
+  const [modalError, setModalError] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
 
   const typeOptions = ["new", "hot deal", "referral"];
 
@@ -46,8 +48,13 @@ export default function OfferTable() {
 
   // Add or edit offer
   const handleSubmit = async () => {
-    if (!form.type || !form.title || !form.description || !form.expireDate)
-      return setError("All fields are required");
+    if (!form.type || !form.title || !form.description || !form.expireDate) {
+      setModalError("All fields are required");
+      setTimeout(() => {
+        setModalError("");
+      }, 3000);
+      return;
+    }
 
     try {
       setLoading(true);
@@ -56,7 +63,7 @@ export default function OfferTable() {
 
       let res;
       if (editId) {
-        form._id=editId
+        form._id = editId;
         res = await axios.patch(
           `${import.meta.env.VITE_APP_URL}api/admin/offers/`,
           form,
@@ -74,13 +81,21 @@ export default function OfferTable() {
         );
       }
 
-      toast.success(res.data.message || "Success!");
-      setForm({ type: "", title: "", description: "", expireDate: "" });
-      setEditId(null);
-      setShowModal(false);
-      fetchList();
+      setModalMessage(editId ? `Added Success! ` : `Edit Successfully`);
+      setTimeout(() => {
+        setForm({ type: "", title: "", description: "", expireDate: "" });
+        setEditId(null);
+        setShowModal(false);
+        fetchList();
+        setModalMessage("");
+      }, 1500);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Something went wrong");
+      setModalError(
+        err?.response.data?.message || err?.message || "Failed to save benefit."
+      );
+      setTimeout(() => {
+        setModalError("");
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -139,7 +154,7 @@ export default function OfferTable() {
             onClick={openAdd}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
-            + Add 
+            + Add
           </button>
         </div>
 
@@ -231,7 +246,17 @@ export default function OfferTable() {
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
               {editId ? "Edit Offer" : "Add New Offer"}
             </h3>
+            {modalError && (
+              <div className="bg-red-100 text-red-700 p-3 rounded-xl mb-4 text-center">
+                {modalError}
+              </div>
+            )}
 
+            {modalMessage && (
+              <div className="bg-green-100 text-green-700 p-3 rounded-xl mb-4 text-center">
+                {modalMessage}
+              </div>
+            )}
             {/* Type Dropdown */}
             <select
               name="type"

@@ -47,9 +47,18 @@ export default function SignInForm() {
                   <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
                         <div>
                               <div className="mb-5 sm:mb-8">
+                                    <div className="">
+                                   <img
+                                                      width={50}
+                                                      height={5}
+                                                      src="/images/logo/home.png"
+                                                      alt="Logo"
+                                                /></div>
                                     <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-                                          Sign In
+                                          Sign In GGES   
                                     </h1>
+                                   
+                                   
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
                                           Enter your email and password to sign
                                           in!

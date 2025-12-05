@@ -17,6 +17,9 @@ export default function WhyChoose() {
   const [confirmModal, setConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [modalError, setModalError] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+
   const token = localStorage.getItem("educationToken");
 
   // handle input change
@@ -56,8 +59,13 @@ export default function WhyChoose() {
 
   // add or edit
   const handleSubmit = async () => {
-    if (!form.title || !form.description)
-      return setError("All fields are required");
+    setModalError("All fields are required");
+    if (!form.title || !form.description) {
+      setTimeout(() => {
+        setModalError("");
+      }, 3000);
+      return;
+    }
 
     try {
       setLoading(true);
@@ -94,17 +102,23 @@ export default function WhyChoose() {
           }
         );
       }
-
-      setMessage(res.data.message || "Success!");
-      setTimeout(() => setMessage(""), 2000);
-      setForm({ title: "", description: "" });
-      setImage(null);
-      setPreview("");
-      setEditId(null);
-      setShowModal(false);
-      fetchList();
+      setModalMessage(editId ? `Added Success! ` : `Edit Successfully`);
+      setTimeout(() => {
+        setForm({ title: "", description: "" });
+        setImage(null);
+        setPreview("");
+        setEditId(null);
+        setShowModal(false);
+        fetchList();
+        setModalMessage("");
+      }, 1500);
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      setModalError(
+        err?.response.data?.message || err?.message || "Failed to save benefit."
+      );
+      setTimeout(() => {
+        setModalError("");
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -258,7 +272,17 @@ export default function WhyChoose() {
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
               {editId ? "Edit Item" : "Add New Item"}
             </h3>
+            {modalError && (
+              <div className="bg-red-100 text-red-700 p-3 rounded-xl mb-4 text-center">
+                {modalError}
+              </div>
+            )}
 
+            {modalMessage && (
+              <div className="bg-green-100 text-green-700 p-3 rounded-xl mb-4 text-center">
+                {modalMessage}
+              </div>
+            )}
             {/* Upload area */}
             <div className="border-2 border-dashed border-blue-400 rounded-xl p-4 text-center mb-3 bg-blue-50 hover:bg-blue-100 transition-all">
               <label
