@@ -8,17 +8,21 @@ export default function StbTestPrepAdmin() {
   const token = localStorage.getItem("educationToken");
 
   // --- Initial State ---
-  const initialState = {
-    heroTitle: "",
-    heroDescription: "",
-    aboutHeading: "",
-    aboutDescription: "",
-    subtestHeading: "",
-    subtests: [{ title: "", content: "" }],
-    infoHeading: "",
-    infoDescription: "",
-    timeTable: [{ activity: "", time5th6th: "", time7thPlus: "" }]
-  };
+const initialState = {
+  heroTitle: "",
+  heroDescription: "",
+  aboutHeading: "",
+  aboutDescription: "",
+  subtestHeading: "",
+  stbUsedDescription: "",
+  stbSubsetPoints: [""],
+  stbSubsetDescription: "",
+  subtests: [{ title: "", content: "" }],
+  infoHeading: "",
+  infoDescription: "",
+  timeTable: [{ activity: "", time5th6th: "", time7thPlus: "" }]
+};
+
 
   const [form, setForm] = useState(initialState);
 
@@ -126,6 +130,65 @@ export default function StbTestPrepAdmin() {
           <input name="aboutHeading" value={form.aboutHeading} onChange={handleChange} placeholder="Heading (e.g. About the STB)" className="w-full mb-3 p-2 border rounded" />
           <textarea name="aboutDescription" value={form.aboutDescription} onChange={handleChange} placeholder="About Description..." rows={5} className="w-full p-2 border rounded" />
         </div>
+
+        {/* --- NEW STB FIELDS --- */}
+<div className="mb-6 border-b pb-6">
+  <h3 className="font-bold text-lg mb-3 text-gray-700">STB Usage Details</h3>
+
+  {/* Description before points */}
+  <textarea
+    name="stbUsedDescription"
+    value={form.stbUsedDescription}
+    onChange={handleChange}
+    placeholder="Description about how STB is used..."
+    rows={3}
+    className="w-full mb-4 p-2 border rounded"
+  />
+
+  {/* STB Subset Points (Dynamic List) */}
+  <h4 className="font-semibold mb-2">STB Subset Points</h4>
+  {form.stbSubsetPoints?.map((p, i) => (
+    <div key={i} className="flex gap-2 mb-2">
+      <input
+        value={p}
+        onChange={(e) => {
+          const updated = [...form.stbSubsetPoints];
+          updated[i] = e.target.value;
+          setForm({ ...form, stbSubsetPoints: updated });
+        }}
+        placeholder="Enter point..."
+        className="flex-1 p-2 border rounded"
+      />
+      <button
+        onClick={() => {
+          const updated = form.stbSubsetPoints.filter((_, idx) => idx !== i);
+          setForm({ ...form, stbSubsetPoints: updated });
+        }}
+        className="text-red-500"
+      >
+        ✕
+      </button>
+    </div>
+  ))}
+
+  <button
+    onClick={() => setForm({ ...form, stbSubsetPoints: [...form.stbSubsetPoints, ""] })}
+    className="text-blue-600 text-sm font-semibold"
+  >
+    + Add Point
+  </button>
+
+  {/* Description after points */}
+  <textarea
+    name="stbSubsetDescription"
+    value={form.stbSubsetDescription}
+    onChange={handleChange}
+    placeholder="Description after the bullet points..."
+    rows={3}
+    className="w-full mt-4 p-2 border rounded"
+  />
+</div>
+
 
         {/* --- 3. SUBTESTS --- */}
         <div className="mb-6 border-b pb-6">

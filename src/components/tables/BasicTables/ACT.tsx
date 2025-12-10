@@ -1,160 +1,3 @@
-// // @ts-nocheck
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { toast } from "react-toastify";
-
-// export default function ActTestPrepAdmin() {
-//   const [loading, setLoading] = useState(false);
-//   const token = localStorage.getItem("educationToken");
-
-//   // --- Initial State ---
-//   const initialState = {
-//     heroTitle: "",
-//     heroDescription: "",
-//     aboutHeading: "",
-//     aboutDescription: "",
-//     structureHeading: "",
-//     structurePoints: [""],
-//     changesHeading: "",
-//     changesPoints: [""]
-//   };
-
-//   const [form, setForm] = useState(initialState);
-
-//   // --- Fetch Data ---
-//   const fetchData = async () => {
-//     try {
-//       setLoading(true);
-//       const res = await axios.get(
-//         `${import.meta.env.VITE_APP_URL}api/admin/act-test`,
-//         { headers: { Authorization: `Bearer ${token}` } }
-//       );
-//       if (res.data.data) {
-//         setForm({ ...initialState, ...res.data.data });
-//       }
-//     } catch (err) {
-//       toast.error("Failed to load data");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchData();
-//   }, []);
-
-//   // --- Handlers ---
-//   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-//   // Generic List Handler (For Structure & Changes)
-//   const handleListChange = (index, value, listName) => {
-//     const updated = [...form[listName]];
-//     updated[index] = value;
-//     setForm({ ...form, [listName]: updated });
-//   };
-//   const addListItem = (listName) => setForm({ ...form, [listName]: [...form[listName], ""] });
-//   const removeListItem = (index, listName) => {
-//     const updated = form[listName].filter((_, i) => i !== index);
-//     setForm({ ...form, [listName]: updated });
-//   };
-
-//   // --- Actions ---
-//   const handleSave = async () => {
-//     try {
-//       setLoading(true);
-//       await axios.post(`${import.meta.env.VITE_APP_URL}api/admin/act-test`, form, {
-//         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-//       });
-//       toast.success("ACT Page Saved");
-//     } catch (err) {
-//       toast.error("Save Failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleDelete = async () => {
-//     if (!window.confirm("Delete ALL ACT data?")) return;
-//     try {
-//       setLoading(true);
-//       await axios.delete(`${import.meta.env.VITE_APP_URL}api/admin/act-test`, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       toast.success("Deleted Successfully");
-//       setForm(initialState);
-//     } catch (err) {
-//       toast.error("Delete Failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="bg-gray-50 p-6 flex flex-col items-center min-h-screen">
-//       <div className="bg-white rounded-xl shadow-lg w-full max-w-5xl border-t-4 border-blue-600 p-8">
-//         <h2 className="text-3xl font-bold text-center mb-8 text-blue-800">ACT PreTest Section</h2>
-
-//         {/* --- 1. HERO --- */}
-//         <div className="mb-6 border-b pb-6">
-//           <h3 className="font-bold text-lg mb-3 text-gray-700">Hero Section</h3>
-//           <input name="heroTitle" value={form.heroTitle} onChange={handleChange} placeholder="Main Title (e.g. ACT TEST PREP)" className="w-full mb-3 p-2 border rounded" />
-//           <textarea name="heroDescription" value={form.heroDescription} onChange={handleChange} placeholder="Hero Description..." rows={3} className="w-full p-2 border rounded" />
-//         </div>
-
-//         {/* --- 2. ABOUT ACT --- */}
-//         <div className="mb-6 border-b pb-6">
-//           <h3 className="font-bold text-lg mb-3 text-gray-700">All About ACT</h3>
-//           <input name="aboutHeading" value={form.aboutHeading} onChange={handleChange} placeholder="Heading (e.g. All About ACT)" className="w-full mb-3 p-2 border rounded" />
-//           <textarea name="aboutDescription" value={form.aboutDescription} onChange={handleChange} placeholder="Description paragraphs..." rows={5} className="w-full p-2 border rounded" />
-//         </div>
-
-//         {/* --- 3. TEST STRUCTURE (BULLETS) --- */}
-//         <div className="mb-6 border-b pb-6">
-//           <h3 className="font-bold text-lg mb-3 text-gray-700">Test Structure</h3>
-//           <input name="structureHeading" value={form.structureHeading} onChange={handleChange} placeholder="Heading (e.g. ACT Test Structure)" className="w-full mb-3 p-2 border rounded" />
-          
-//           <label className="text-sm font-semibold">Bullet Points:</label>
-//           {form.structurePoints.map((pt, i) => (
-//             <div key={i} className="flex gap-2 mb-2 mt-1">
-//               <input value={pt} onChange={(e)=>handleListChange(i, e.target.value, 'structurePoints')} className="w-full p-2 border rounded" placeholder="e.g. Core Sections: English..." />
-//               <button onClick={()=>removeListItem(i, 'structurePoints')} className="text-red-500">✕</button>
-//             </div>
-//           ))}
-//           <button onClick={()=>addListItem('structurePoints')} className="text-blue-600 text-sm mt-1">+ Add Structure Point</button>
-//         </div>
-
-//         {/* --- 4. NEW CHANGES (NUMBERED LIST) --- */}
-//         <div className="mb-6">
-//           <h3 className="font-bold text-lg mb-3 text-gray-700">New ACT Changes (2025)</h3>
-//           <input name="changesHeading" value={form.changesHeading} onChange={handleChange} placeholder="Heading (e.g. New ACT Changes in 2025)" className="w-full mb-3 p-2 border rounded" />
-          
-//           <label className="text-sm font-semibold">Numbered List Points:</label>
-//           {form.changesPoints.map((pt, i) => (
-//             <div key={i} className="flex gap-2 mb-2 mt-1">
-//               <span className="mt-2 text-gray-500 font-bold">{i+1}.</span>
-//               <input value={pt} onChange={(e)=>handleListChange(i, e.target.value, 'changesPoints')} className="w-full p-2 border rounded" placeholder="e.g. Optional Science Section..." />
-//               <button onClick={()=>removeListItem(i, 'changesPoints')} className="text-red-500">✕</button>
-//             </div>
-//           ))}
-//           <button onClick={()=>addListItem('changesPoints')} className="text-blue-600 text-sm mt-1">+ Add Change Point</button>
-//         </div>
-
-//         {/* --- ACTIONS --- */}
-//         <div className="flex gap-4 mt-6 pt-6 border-t">
-//           <button onClick={handleSave} disabled={loading} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow">
-//             {loading ? "Saving..." : "Save All Changes"}
-//           </button>
-//           <button onClick={handleDelete} disabled={loading} className="px-6 py-3 border border-red-200 text-red-600 font-bold rounded-xl hover:bg-red-50">
-//             Delete All
-//           </button>
-//         </div>
-
-//       </div>
-//     </div>
-//   );
-// }
-
-
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -168,12 +11,13 @@ export default function ActTestPrepAdmin() {
   const initialState = {
     heroTitle: "",
     heroDescription: "",
+
     aboutHeading: "",
     aboutDescription: "",
-    structureHeading: "",
-    structurePoints: [""],
-    changesHeading: "",
-    changesPoints: [""]
+    aboutList: [{ title: "", description: "" }],
+
+    actHeading: "",
+    actList: [{ title: "", description: "" }],
   };
 
   const [form, setForm] = useState(initialState);
@@ -200,64 +44,87 @@ export default function ActTestPrepAdmin() {
     fetchData();
   }, []);
 
-  // --- Handlers ---
+  // ===========================
+  //       INPUT HANDLERS
+  // ===========================
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  // Generic List Handler
-  const handleListChange = (index, value, listName) => {
+  const handleObjectListChange = (listName, index, field, value) => {
     const updated = [...form[listName]];
-    updated[index] = value;
+    updated[index][field] = value;
     setForm({ ...form, [listName]: updated });
   };
-  const addListItem = (listName) => setForm({ ...form, [listName]: [...form[listName], ""] });
-  const removeListItem = (index, listName) => {
+
+  const addObjectListItem = (listName) => {
+    setForm({
+      ...form,
+      [listName]: [...form[listName], { title: "", description: "" }],
+    });
+  };
+
+  const removeObjectListItem = (listName, index) => {
     const updated = form[listName].filter((_, i) => i !== index);
     setForm({ ...form, [listName]: updated });
   };
 
-  // --- VALIDATION & SAVE ---
+  // ===========================
+  //       SAVE BUTTON
+  // ===========================
   const handleSave = async () => {
-    // 1. Validate Single Fields
     if (!form.heroTitle.trim()) return toast.error("Hero Title is required!");
     if (!form.heroDescription.trim()) return toast.error("Hero Description is required!");
+
     if (!form.aboutHeading.trim()) return toast.error("About Heading is required!");
     if (!form.aboutDescription.trim()) return toast.error("About Description is required!");
-    if (!form.structureHeading.trim()) return toast.error("Structure Heading is required!");
-    if (!form.changesHeading.trim()) return toast.error("Changes Heading is required!");
 
-    // 2. Validate Lists (Remove empty items & check length)
-    const validStructurePoints = form.structurePoints.filter(p => p.trim() !== "");
-    if (validStructurePoints.length === 0) return toast.error("At least one Structure Point is required!");
+    if (!form.actHeading.trim()) return toast.error("ACT Heading is required!");
 
-    const validChangesPoints = form.changesPoints.filter(p => p.trim() !== "");
-    if (validChangesPoints.length === 0) return toast.error("At least one Changes Point is required!");
+    const cleanedAboutList = form.aboutList.filter(
+      (a) => a.title.trim() !== "" || a.description.trim() !== ""
+    );
+    const cleanedActList = form.actList.filter(
+      (a) => a.title.trim() !== "" || a.description.trim() !== ""
+    );
 
-    // Prepare clean data object
-    const dataToSend = {
+    if (cleanedAboutList.length === 0)
+      return toast.error("At least one About List item is required!");
+
+    if (cleanedActList.length === 0)
+      return toast.error("At least one ACT List item is required!");
+
+    const payload = {
       ...form,
-      structurePoints: validStructurePoints,
-      changesPoints: validChangesPoints
+      aboutList: cleanedAboutList,
+      actList: cleanedActList,
     };
 
     try {
       setLoading(true);
-      await axios.post(`${import.meta.env.VITE_APP_URL}api/admin/act-test`, dataToSend, {
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      });
+      await axios.post(
+        `${import.meta.env.VITE_APP_URL}api/admin/act-test`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       toast.success("ACT Page Saved Successfully");
-      
-      // Update form with cleaned lists to reflect UI
-      setForm(dataToSend);
-      
+      setForm(payload);
     } catch (err) {
-      toast.error("Save Failed");
+      console.log(err);
+      toast.error("Failed to Save");
     } finally {
       setLoading(false);
     }
   };
 
+  // ===========================
+  //       DELETE ALL
+  // ===========================
   const handleDelete = async () => {
-    if (!window.confirm("Delete ALL ACT data?")) return;
+    if (!confirm("Delete ALL ACT data?")) return;
     try {
       setLoading(true);
       await axios.delete(`${import.meta.env.VITE_APP_URL}api/admin/act-test`, {
@@ -272,114 +139,183 @@ export default function ActTestPrepAdmin() {
     }
   };
 
+  // ==========================================================
+  //                       UI PAGE
+  // ==========================================================
   return (
     <div className="bg-gray-50 p-6 flex flex-col items-center min-h-screen">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-5xl border-t-4 border-blue-600 p-8">
-        <h2 className="text-3xl font-bold text-center mb-8 text-blue-800">ACT PreTest Section</h2>
+        <h2 className="text-3xl font-bold text-center mb-8 text-blue-800">
+          ACT Test Preparation — Admin
+        </h2>
 
-        {/* --- 1. HERO --- */}
-        <div className="mb-6 border-b pb-6">
-          <h3 className="font-bold text-lg mb-3 text-gray-700">Hero Section <span className="text-red-500">*</span></h3>
-          <input 
-            name="heroTitle" 
-            value={form.heroTitle} 
-            onChange={handleChange} 
-            placeholder="Main Title (e.g. ACT TEST PREP)" 
-            className={`w-full mb-3 p-2 border rounded ${!form.heroTitle ? 'border-red-300' : ''}`}
-          />
-          <textarea 
-            name="heroDescription" 
-            value={form.heroDescription} 
-            onChange={handleChange} 
-            placeholder="Hero Description..." 
-            rows={3} 
-            className={`w-full p-2 border rounded ${!form.heroDescription ? 'border-red-300' : ''}`}
-          />
-        </div>
+        {/* --------------------------- HERO SECTION --------------------------- */}
+        <section className="mb-8 border-b pb-6">
+          <h3 className="text-xl font-bold mb-4 text-gray-700">
+            Hero Section <span className="text-red-500">*</span>
+          </h3>
 
-        {/* --- 2. ABOUT ACT --- */}
-        <div className="mb-6 border-b pb-6">
-          <h3 className="font-bold text-lg mb-3 text-gray-700">All About ACT <span className="text-red-500">*</span></h3>
-          <input 
-            name="aboutHeading" 
-            value={form.aboutHeading} 
-            onChange={handleChange} 
-            placeholder="Heading (e.g. All About ACT)" 
-            className={`w-full mb-3 p-2 border rounded ${!form.aboutHeading ? 'border-red-300' : ''}`}
+          <input
+            name="heroTitle"
+            value={form.heroTitle}
+            onChange={handleChange}
+            className="w-full p-2 border rounded mb-4"
+            placeholder="Hero Title..."
           />
-          <textarea 
-            name="aboutDescription" 
-            value={form.aboutDescription} 
-            onChange={handleChange} 
-            placeholder="Description paragraphs..." 
-            rows={5} 
-            className={`w-full p-2 border rounded ${!form.aboutDescription ? 'border-red-300' : ''}`}
-          />
-        </div>
 
-        {/* --- 3. TEST STRUCTURE (BULLETS) --- */}
-        <div className="mb-6 border-b pb-6">
-          <h3 className="font-bold text-lg mb-3 text-gray-700">Test Structure <span className="text-red-500">*</span></h3>
-          <input 
-            name="structureHeading" 
-            value={form.structureHeading} 
-            onChange={handleChange} 
-            placeholder="Heading (e.g. ACT Test Structure)" 
-            className={`w-full mb-3 p-2 border rounded ${!form.structureHeading ? 'border-red-300' : ''}`}
+          <textarea
+            name="heroDescription"
+            value={form.heroDescription}
+            onChange={handleChange}
+            rows={3}
+            className="w-full p-2 border rounded"
+            placeholder="Hero Description..."
           />
-          
-          <label className="text-sm font-semibold">Bullet Points (At least one required):</label>
-          {form.structurePoints.map((pt, i) => (
-            <div key={i} className="flex gap-2 mb-2 mt-1">
-              <input 
-                value={pt} 
-                onChange={(e)=>handleListChange(i, e.target.value, 'structurePoints')} 
-                className="w-full p-2 border rounded" 
-                placeholder="e.g. Core Sections: English..." 
+        </section>
+
+        {/* --------------------------- ABOUT SECTION --------------------------- */}
+        <section className="mb-8 border-b pb-6">
+          <h3 className="text-xl font-bold mb-4 text-gray-700">
+            About ACT Section <span className="text-red-500">*</span>
+          </h3>
+
+          <input
+            name="aboutHeading"
+            value={form.aboutHeading}
+            onChange={handleChange}
+            className="w-full p-2 border rounded mb-3"
+            placeholder="About Heading..."
+          />
+
+          <textarea
+            name="aboutDescription"
+            value={form.aboutDescription}
+            onChange={handleChange}
+            className="w-full p-2 border rounded mb-6"
+            rows={4}
+            placeholder="About Description..."
+          />
+
+          <h4 className="font-semibold mb-2">About List Items:</h4>
+
+          {form.aboutList.map((item, index) => (
+            <div key={index} className="border rounded p-4 mb-3 bg-gray-50">
+              <input
+                value={item.title}
+                onChange={(e) =>
+                  handleObjectListChange("aboutList", index, "title", e.target.value)
+                }
+                className="w-full p-2 border rounded mb-2"
+                placeholder="Title..."
               />
-              <button onClick={()=>removeListItem(i, 'structurePoints')} className="text-red-500">✕</button>
+
+              <textarea
+                value={item.description}
+                onChange={(e) =>
+                  handleObjectListChange(
+                    "aboutList",
+                    index,
+                    "description",
+                    e.target.value
+                  )
+                }
+                className="w-full p-2 border rounded"
+                rows={3}
+                placeholder="Description..."
+              />
+
+              <button
+                onClick={() => removeObjectListItem("aboutList", index)}
+                className="text-red-600 mt-2"
+              >
+                ✕ Remove
+              </button>
             </div>
           ))}
-          <button onClick={()=>addListItem('structurePoints')} className="text-blue-600 text-sm mt-1">+ Add Structure Point</button>
-        </div>
 
-        {/* --- 4. NEW CHANGES (NUMBERED LIST) --- */}
-        <div className="mb-6">
-          <h3 className="font-bold text-lg mb-3 text-gray-700">New ACT Changes (2025) <span className="text-red-500">*</span></h3>
-          <input 
-            name="changesHeading" 
-            value={form.changesHeading} 
-            onChange={handleChange} 
-            placeholder="Heading (e.g. New ACT Changes in 2025)" 
-            className={`w-full mb-3 p-2 border rounded ${!form.changesHeading ? 'border-red-300' : ''}`}
+          <button
+            onClick={() => addObjectListItem("aboutList")}
+            className="text-blue-600"
+          >
+            + Add About Item
+          </button>
+        </section>
+
+        {/* --------------------------- ACT LIST SECTION --------------------------- */}
+        <section className="mb-8">
+          <h3 className="text-xl font-bold mb-4 text-gray-700">
+            ACT Test Sections <span className="text-red-500">*</span>
+          </h3>
+
+          <input
+            name="actHeading"
+            value={form.actHeading}
+            onChange={handleChange}
+            className="w-full p-2 border rounded mb-4"
+            placeholder="ACT Test Heading..."
           />
-          
-          <label className="text-sm font-semibold">Numbered List Points (At least one required):</label>
-          {form.changesPoints.map((pt, i) => (
-            <div key={i} className="flex gap-2 mb-2 mt-1">
-              <span className="mt-2 text-gray-500 font-bold">{i+1}.</span>
-              <input 
-                value={pt} 
-                onChange={(e)=>handleListChange(i, e.target.value, 'changesPoints')} 
-                className="w-full p-2 border rounded" 
-                placeholder="e.g. Optional Science Section..." 
+
+          {form.actList.map((item, index) => (
+            <div key={index} className="border rounded p-4 mb-3 bg-gray-50">
+              <input
+                value={item.title}
+                onChange={(e) =>
+                  handleObjectListChange("actList", index, "title", e.target.value)
+                }
+                className="w-full p-2 border rounded mb-2"
+                placeholder="ACT Test Section Title..."
               />
-              <button onClick={()=>removeListItem(i, 'changesPoints')} className="text-red-500">✕</button>
+
+              <textarea
+                value={item.description}
+                onChange={(e) =>
+                  handleObjectListChange(
+                    "actList",
+                    index,
+                    "description",
+                    e.target.value
+                  )
+                }
+                className="w-full p-2 border rounded"
+                rows={3}
+                placeholder="Description..."
+              />
+
+              <button
+                onClick={() => removeObjectListItem("actList", index)}
+                className="text-red-600 mt-2"
+              >
+                ✕ Remove
+              </button>
             </div>
           ))}
-          <button onClick={()=>addListItem('changesPoints')} className="text-blue-600 text-sm mt-1">+ Add Change Point</button>
-        </div>
 
-        {/* --- ACTIONS --- */}
+          <button
+            onClick={() => addObjectListItem("actList")}
+            className="text-blue-600"
+          >
+            + Add ACT Item
+          </button>
+        </section>
+
+        {/* --------------------------- ACTION BUTTONS --------------------------- */}
         <div className="flex gap-4 mt-6 pt-6 border-t">
-          <button onClick={handleSave} disabled={loading} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow">
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow"
+          >
             {loading ? "Saving..." : "Save All Changes"}
           </button>
-          <button onClick={handleDelete} disabled={loading} className="px-6 py-3 border border-red-200 text-red-600 font-bold rounded-xl hover:bg-red-50">
+
+          <button
+            onClick={handleDelete}
+            disabled={loading}
+            className="px-6 py-3 border border-red-200 text-red-600 font-bold rounded-xl hover:bg-red-50"
+          >
             Delete All
           </button>
         </div>
-
       </div>
     </div>
   );
