@@ -120,15 +120,6 @@ export default function App() {
              <Route path="/PSATtestDetails" element={<PSATtestDetails/>} /> 
 
 
-
-
-
-
-
-
-
-
-
             <Route path="/users" element={<UserTables />} />
 
             {/* Others Page */}

@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -16,6 +17,7 @@ export default function PSATDetail() {
     aboutHeading: "",
     aboutDescription: "",
     tableData: [{ section: "", time: "", modules: "" }], 
+    examPeriod: [{ section: "", time: "", modules: "" }],
     tableFooter: ""
   };
 
@@ -39,6 +41,7 @@ export default function PSATDetail() {
           features: data.features?.length ? data.features : [""],
           aboutHeading: data.aboutHeading || "",
           aboutDescription: data.aboutDescription || "",
+          examPeriod: data.examPeriod?.length ? data.examPeriod : [{ section: "", time: "", modules: "" }],
           tableData: data.tableData?.length ? data.tableData : [{ section: "", time: "", modules: "" }],
           tableFooter: data.tableFooter || ""
         });
@@ -86,8 +89,74 @@ export default function PSATDetail() {
     setForm({ ...form, tableData: updatedTable });
   };
 
-  // --- 3. SAVE DATA (Update/Create) ---
+  const handleExamPeriodChange = (index, field, value) => {
+  const updated = [...form.examPeriod];
+  updated[index][field] = value;
+  setForm({ ...form, examPeriod: updated });
+};
+
+const addExamPeriodRow = () => {
+  setForm({
+    ...form,
+    examPeriod: [...form.examPeriod, { section: "", time: "", modules: "" }]
+  });
+};
+
+const removeExamPeriodRow = (index) => {
+  const updated = form.examPeriod.filter((_, i) => i !== index);
+  setForm({ ...form, examPeriod: updated });
+};
+
+  // --- 3. SAVE DATA (Validation Added) ---
   const handleSave = async () => {
+    // --- VALIDATION START ---
+    
+    // 1. Text Fields Validation
+    if (!form.heroTitle.trim()) return toast.error("Hero Title is required!");
+    if (!form.heroSubtitle.trim()) return toast.error("Hero Subtitle is required!");
+    if (!form.heroDescription.trim()) return toast.error("Hero Description is required!");
+    if (!form.aboutHeading.trim()) return toast.error("About Heading is required!");
+    if (!form.aboutDescription.trim()) return toast.error("About Description is required!");
+    if (!form.tableFooter.trim()) return toast.error("Table Footer Note is required!");
+
+    // 2. Features List Validation
+    const cleanFeatures = form.features.filter(f => f.trim() !== "");
+    if (cleanFeatures.length === 0) {
+      return toast.error("At least one Feature is required!");
+    }
+
+    // 3. Table Data Validation
+    // Remove rows that have any empty cell
+    const cleanTableData = form.tableData.filter(
+      row => row.section.trim() !== "" && row.time.trim() !== "" && row.modules.trim() !== ""
+    );
+
+    if (cleanTableData.length === 0) {
+      return toast.error("At least one complete Table Row is required!");
+    }
+
+    // Exam Period Validation
+const cleanExamPeriod = form.examPeriod.filter(
+  row =>
+    row.section.trim() !== "" &&
+    row.time.trim() !== "" &&
+    row.modules.trim() !== ""
+);
+
+if (cleanExamPeriod.length === 0) {
+  return toast.error("At least one Exam Period row is required!");
+}
+
+
+    // Prepare clean payload
+    const dataToSend = {
+      ...form,
+      features: cleanFeatures,
+      tableData: cleanTableData,
+      examPeriod: cleanExamPeriod
+    };
+    // --- VALIDATION END ---
+
     try {
       setLoading(true);
       const res = await axios.post(
@@ -313,6 +382,58 @@ export default function PSATDetail() {
             />
           </div>
         </div>
+        {/* --- SECTION: EXAM PERIOD --- */}
+<div className="bg-gray-50 p-5 rounded-xl border border-gray-200 mt-8">
+  <h4 className="font-bold text-gray-700 mb-3">
+    Exam Period <span className="text-red-500">*</span>
+  </h4>
+
+  {form.examPeriod.map((row, index) => (
+    <div key={index} className="flex flex-col sm:flex-row gap-2 mb-3 items-start">
+      <input
+        placeholder="Section Name"
+        value={row.section}
+        onChange={(e) => handleExamPeriodChange(index, "section", e.target.value)}
+        className={`flex-1 p-3 border rounded-xl ${
+          !row.section ? "border-red-300" : "border-gray-300 focus:ring-1 focus:ring-blue-500"
+        }`}
+      />
+
+      <input
+        placeholder="Time (e.g. 64 Mins)"
+        value={row.time}
+        onChange={(e) => handleExamPeriodChange(index, "time", e.target.value)}
+        className={`flex-1 p-3 border rounded-xl ${
+          !row.time ? "border-red-300" : "border-gray-300 focus:ring-1 focus:ring-blue-500"
+        }`}
+      />
+
+      <input
+        placeholder="Modules (e.g. 2)"
+        value={row.modules}
+        onChange={(e) => handleExamPeriodChange(index, "modules", e.target.value)}
+        className={`flex-1 p-3 border rounded-xl ${
+          !row.modules ? "border-red-300" : "border-gray-300 focus:ring-1 focus:ring-blue-500"
+        }`}
+      />
+
+      <button
+        onClick={() => removeExamPeriodRow(index)}
+        className="bg-red-500 text-white p-3 rounded-xl hover:bg-red-600 transition h-[50px] w-[50px] flex items-center justify-center shadow-sm"
+      >
+        ✕
+      </button>
+    </div>
+  ))}
+
+  <button
+    onClick={addExamPeriodRow}
+    className="mt-2 w-full py-3 border-2 border-dashed border-gray-300 text-gray-500 font-medium rounded-xl hover:bg-white hover:border-blue-400 hover:text-blue-500 transition"
+  >
+    + Add Exam Period Row
+  </button>
+</div>
+
 
         {/* --- ACTION BUTTONS (UPDATE & DELETE) --- */}
         <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">

@@ -174,60 +174,60 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     subItems: [
       {
-        name: "SATTestDetails",
+        name: "Test Prep ",
         path: "/TestPrepDetails", 
       },
      {
-        name: "SSATtestDetails",
+        name: "SSAT",
         path: "/SSATtestDetails",   
       },
       {
-        name: "PSATtestDetails",
+        name: "PSAT",
         path: "/PSATtestDetails",   
       },
        {
-        name: "SHSATtestDetails",
+        name: "SHSAT",
         path: "/SHSATtestDetails",   
       },
         {
-        name: "ISEEtestDetails",
+        name: "ISEE",
         path: "/ISEEtestDetails",   
       },
        {
-        name: "ELAtestDetails",
+        name: "ELA",
         path: "/ELAtestDetails",   
       },
          {
-        name: "ScatTestPrepAdmin",
+        name: "SCAT",
         path: "/ScatTestPrepAdmin",   
       },
         {
-        name: "AMCtestDetails",
+        name: "AMC",
         path: "/AMCtestDetails",   
       },
         {
-        name: "KangarooDetails",
+        name: "KANGAROO",
         path: "/KangarooDetails",   
       },
           {
-        name: "ACTtestDetails",
+        name: "ACT",
         path: "/ACTtestDetails",   
       },
         {
-        name: "COGATtestDetails",
+        name: "COGAT",
         path: "/COGATtestDetails",   
       },
         {
-        name: "SBACtestDetails",
+        name: "SBAC",
         path: "/SBACtestDetails",   
       },
        {
-        name: "AccuplacerDetails",
+        name: "ACUPLACER",
         path: "/AccuplacerDetails",   
       }
       ,
        {
-        name: "STBTtestDetails",
+        name: "STBT",
         path: "/STBTtestDetails",   
       }
       
