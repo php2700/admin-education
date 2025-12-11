@@ -174,7 +174,7 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     subItems: [
       {
-        name: "TestPrepDetails",
+        name: "SATTestDetails",
         path: "/TestPrepDetails", 
       },
      {
