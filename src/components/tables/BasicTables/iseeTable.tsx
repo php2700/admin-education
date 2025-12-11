@@ -111,7 +111,7 @@ export default function AboutIseeTab() {
   };
 
   return (
-    <div className="bg-gray-50 p-8 min-h-[80vh] flex flex-col items-center">
+    <div className="bg-gray-50 p-8 min-h-[80vh] flex flex-col items-center ">
       <div className="bg-white rounded-2xl p-6 shadow-lg w-full md:w-2/3 lg:w-1/2">
         <h3 className="text-xl font-semibold mb-4 text-center">About ISEE</h3>
 
