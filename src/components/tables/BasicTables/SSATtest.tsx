@@ -274,35 +274,710 @@
 //   );
 // }
 
+
+
+
 // @ts-nocheck
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import { toast } from "react-toastify";
+
+// export default function SSATtestpage() {
+//   const [loading, setLoading] = useState(false);
+//   const token = localStorage.getItem("educationToken");
+
+//   // --- Initial Empty State ---
+//   const initialState = {
+//     heroTitle: "",
+//     heroDescription: "",
+//     aboutHeading: "",
+//     aboutDescription: "",
+//     levels: [{ title: "", description: "" }], 
+//     comparisonHeading: "",
+//     comparisonPoints: [""], 
+//     scoringHeading: "",
+//     scoringCards: [{ title: "", content: "" }], 
+//     scoringFooter: "",
+//     structureHeading: "",
+//     middleTable: [{ section: "", time: "", questions: "" }],
+//     upperTable: [{ section: "", time: "", questions: "" }],
+//   };
+
+//   const [form, setForm] = useState(initialState);
+
+//   // --- 1. FETCH DATA ---
+//   const fetchData = async () => {
+//     try {
+//       setLoading(true);
+//       const res = await axios.get(
+//         `${import.meta.env.VITE_APP_URL}api/admin/ssat-test`,
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+      
+//       if (res.data.data) {
+//         setForm({ ...initialState, ...res.data.data }); 
+//       }
+//     } catch (err) {
+//       toast.error("Failed to load existing data");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchData();
+//   }, []);
+
+//   // --- 2. HANDLERS ---
+
+//   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+//   const handleArrayChange = (index, field, value, arrayName) => {
+//     const updated = [...form[arrayName]];
+//     updated[index][field] = value;
+//     setForm({ ...form, [arrayName]: updated });
+//   };
+  
+//   const addItem = (arrayName, itemTemplate) => {
+//     setForm({ ...form, [arrayName]: [...form[arrayName], itemTemplate] });
+//   };
+
+//   const removeItem = (index, arrayName) => {
+//     const updated = form[arrayName].filter((_, i) => i !== index);
+//     setForm({ ...form, [arrayName]: updated });
+//   };
+
+//   const handlePointChange = (index, value) => {
+//     const updated = [...form.comparisonPoints];
+//     updated[index] = value;
+//     setForm({ ...form, comparisonPoints: updated });
+//   };
+//   const addPoint = () => setForm({ ...form, comparisonPoints: [...form.comparisonPoints, ""] });
+//   const removePoint = (index) => setForm({ ...form, comparisonPoints: form.comparisonPoints.filter((_, i) => i !== index) });
+
+
+//   // --- 3. VALIDATION & SAVE LOGIC ---
+//   const handleUpdate = async () => {
+//     // --- Validation Start ---
+    
+//     // 1. Basic Fields
+//     if (!form.heroTitle.trim()) return toast.error("Hero Title is required!");
+//     if (!form.heroDescription.trim()) return toast.error("Hero Description is required!");
+//     if (!form.aboutHeading.trim()) return toast.error("About Heading is required!");
+//     if (!form.aboutDescription.trim()) return toast.error("About Description is required!");
+//     if (!form.comparisonHeading.trim()) return toast.error("Comparison Heading is required!");
+//     if (!form.scoringHeading.trim()) return toast.error("Scoring Heading is required!");
+//     if (!form.structureHeading.trim()) return toast.error("Structure Heading is required!");
+    
+//     // 2. Clean and Check Lists (Levels)
+//     const validLevels = form.levels.filter(l => l.title.trim() !== "" && l.description.trim() !== "");
+//     if (validLevels.length === 0) return toast.error("At least one Level Box is required!");
+
+//     // 3. Clean Comparison Points
+//     const validComparisonPoints = form.comparisonPoints.filter(p => p.trim() !== "");
+//     if (validComparisonPoints.length === 0) return toast.error("At least one Comparison Point is required!");
+
+//     // 4. Clean Scoring Cards
+//     const validScoringCards = form.scoringCards.filter(c => c.title.trim() !== "" && c.content.trim() !== "");
+//     if (validScoringCards.length === 0) return toast.error("At least one Scoring Card is required!");
+
+//     // 5. Clean Tables
+//     const validMiddleTable = form.middleTable.filter(r => r.section.trim() !== "" && r.time.trim() !== "" && r.questions.trim() !== "");
+//     const validUpperTable = form.upperTable.filter(r => r.section.trim() !== "" && r.time.trim() !== "" && r.questions.trim() !== "");
+
+//     if (validMiddleTable.length === 0) return toast.error("Middle Level Table cannot be empty!");
+//     if (validUpperTable.length === 0) return toast.error("Upper Level Table cannot be empty!");
+
+//     // Prepare Clean Payload
+//     const dataToSend = {
+//       ...form,
+//       levels: validLevels,
+//       comparisonPoints: validComparisonPoints,
+//       scoringCards: validScoringCards,
+//       middleTable: validMiddleTable,
+//       upperTable: validUpperTable
+//     };
+//     // --- Validation End ---
+
+//     try {
+//       setLoading(true);
+//       const res = await axios.post(
+//         `${import.meta.env.VITE_APP_URL}api/admin/ssat-test`, 
+//         dataToSend, 
+//         {
+//             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+//         }
+//       );
+//       toast.success(res.data.message || "Data Updated Successfully!");
+      
+//       // Update local form state with clean data
+//       setForm(dataToSend);
+      
+//     } catch (err) {
+//       toast.error("Update failed. Please try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // --- 4. DELETE ACTION ---
+//   const handleDelete = async () => {
+//     if (!window.confirm("Are you sure? This will delete ALL SSAT page data.")) return;
+//     try {
+//       setLoading(true);
+//       await axios.delete(`${import.meta.env.VITE_APP_URL}api/admin/ssat-test`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       toast.success("All Data Deleted Successfully");
+//       setForm(initialState); 
+//     } catch (err) {
+//       toast.error("Delete failed");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="bg-gray-50 p-6 flex flex-col items-center min-h-screen">
+//       <div className="bg-white rounded-xl shadow-lg w-full max-w-6xl border-t-4 border-blue-600 p-8">
+        
+//         <div className="flex justify-between items-center mb-8 border-b pb-4">
+//             <h2 className="text-3xl font-bold text-blue-800">SSAT PreTest Section</h2>
+//             <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+//                 {loading ? "Syncing..." : "Edit Mode Active"}
+//             </span>
+//         </div>
+
+//         {/* --- 1. HERO & ABOUT --- */}
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 pb-6 border-b border-gray-100">
+//           <div>
+//             <h3 className="font-bold text-lg mb-2 text-gray-700">Hero Section <span className="text-red-500">*</span></h3>
+//             <label className="text-xs text-gray-500">Main Title</label>
+//             <input 
+//               name="heroTitle" 
+//               value={form.heroTitle} 
+//               onChange={handleChange} 
+//               placeholder="SSAT TEST PREP" 
+//               className={`w-full mb-3 p-2 border rounded outline-none ${!form.heroTitle ? 'border-red-300' : 'border-gray-300'}`}
+//             />
+//             <label className="text-xs text-gray-500">Description</label>
+//             <textarea 
+//               name="heroDescription" 
+//               value={form.heroDescription} 
+//               onChange={handleChange} 
+//               placeholder="At GGES..." 
+//               rows={3} 
+//               className={`w-full p-2 border rounded outline-none ${!form.heroDescription ? 'border-red-300' : 'border-gray-300'}`}
+//             />
+//           </div>
+//           <div>
+//             <h3 className="font-bold text-lg mb-2 text-gray-700">About Section <span className="text-red-500">*</span></h3>
+//             <label className="text-xs text-gray-500">Heading</label>
+//             <input 
+//               name="aboutHeading" 
+//               value={form.aboutHeading} 
+//               onChange={handleChange} 
+//               placeholder="ABOUT SSAT" 
+//               className={`w-full mb-3 p-2 border rounded outline-none ${!form.aboutHeading ? 'border-red-300' : 'border-gray-300'}`}
+//             />
+//             <label className="text-xs text-gray-500">Description</label>
+//             <textarea 
+//               name="aboutDescription" 
+//               value={form.aboutDescription} 
+//               onChange={handleChange} 
+//               placeholder="Developed to..." 
+//               rows={3} 
+//               className={`w-full p-2 border rounded outline-none ${!form.aboutDescription ? 'border-red-300' : 'border-gray-300'}`}
+//             />
+//           </div>
+//         </div>
+
+//         {/* --- 2. LEVELS --- */}
+//         <div className="mb-8 pb-6 border-b border-gray-100">
+//           <h3 className="font-bold text-lg mb-4 text-gray-700">Levels (Elementary, Middle, Upper) <span className="text-red-500">*</span></h3>
+//           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//             {form.levels.map((level, i) => (
+//               <div key={i} className="bg-blue-50 p-4 rounded-lg relative border border-blue-100 shadow-sm">
+//                 <button onClick={() => removeItem(i, 'levels')} className="absolute top-2 right-2 text-red-400 hover:text-red-600 font-bold">✕</button>
+//                 <input 
+//                   value={level.title} 
+//                   onChange={(e) => handleArrayChange(i, 'title', e.target.value, 'levels')} 
+//                   placeholder="Title (e.g. Middle Level)" 
+//                   className={`w-full mb-2 p-2 border rounded font-semibold text-sm ${!level.title ? 'border-red-300' : 'border-gray-300'}`}
+//                 />
+//                 <textarea 
+//                   value={level.description} 
+//                   onChange={(e) => handleArrayChange(i, 'description', e.target.value, 'levels')} 
+//                   placeholder="Description..." 
+//                   rows={4} 
+//                   className={`w-full p-2 border rounded text-xs ${!level.description ? 'border-red-300' : 'border-gray-300'}`}
+//                 />
+//               </div>
+//             ))}
+//           </div>
+//           <button onClick={() => addItem('levels', { title: "", description: "" })} className="mt-3 text-blue-600 font-medium text-sm hover:underline">+ Add Level Box</button>
+//         </div>
+
+//         {/* --- 3. COMPARISON & SCORING --- */}
+//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 pb-6 border-b border-gray-100">
+          
+//           {/* Comparison */}
+//           <div>
+//             <h3 className="font-bold text-lg mb-2 text-gray-700">SSAT vs ISEE Points <span className="text-red-500">*</span></h3>
+//             <input 
+//               name="comparisonHeading" 
+//               value={form.comparisonHeading} 
+//               onChange={handleChange} 
+//               className={`w-full mb-3 p-2 border rounded font-semibold text-sm ${!form.comparisonHeading ? 'border-red-300' : 'border-gray-300'}`}
+//             />
+//             <ul className="space-y-2 bg-gray-50 p-3 rounded">
+//               {form.comparisonPoints.map((pt, i) => (
+//                 <li key={i} className="flex gap-2">
+//                   <span className="mt-2 text-xs">●</span>
+//                   <input 
+//                     value={pt} 
+//                     onChange={(e) => handlePointChange(i, e.target.value)} 
+//                     className={`w-full p-2 border rounded text-sm ${!pt ? 'border-red-300' : 'border-gray-300'}`}
+//                   />
+//                   <button onClick={() => removePoint(i)} className="text-red-400">✕</button>
+//                 </li>
+//               ))}
+//             </ul>
+//             <button onClick={addPoint} className="mt-2 text-blue-600 text-sm hover:underline">+ Add Comparison Point</button>
+//           </div>
+
+//           {/* Scoring */}
+//           <div>
+//             <h3 className="font-bold text-lg mb-2 text-gray-700">Scoring Info <span className="text-red-500">*</span></h3>
+//             <input 
+//               name="scoringHeading" 
+//               value={form.scoringHeading} 
+//               onChange={handleChange} 
+//               className={`w-full mb-3 p-2 border rounded font-semibold text-sm ${!form.scoringHeading ? 'border-red-300' : 'border-gray-300'}`}
+//             />
+//             <div className="space-y-3">
+//               {form.scoringCards.map((card, i) => (
+//                 <div key={i} className="flex gap-2 items-start border p-2 rounded bg-gray-50">
+//                   <div className="flex-1">
+//                     <input 
+//                       value={card.title} 
+//                       onChange={(e) => handleArrayChange(i, 'title', e.target.value, 'scoringCards')} 
+//                       placeholder="e.g. Quantitative" 
+//                       className={`w-full mb-1 p-1 border rounded text-sm font-bold ${!card.title ? 'border-red-300' : 'border-gray-300'}`}
+//                     />
+//                     <textarea 
+//                       value={card.content} 
+//                       onChange={(e) => handleArrayChange(i, 'content', e.target.value, 'scoringCards')} 
+//                       placeholder="Scores..." 
+//                       rows={2} 
+//                       className={`w-full p-1 border rounded text-xs ${!card.content ? 'border-red-300' : 'border-gray-300'}`}
+//                     />
+//                   </div>
+//                   <button onClick={() => removeItem(i, 'scoringCards')} className="text-red-400 mt-2">✕</button>
+//                 </div>
+//               ))}
+//             </div>
+//             <button onClick={() => addItem('scoringCards', { title: "", content: "" })} className="mt-2 text-blue-600 text-sm hover:underline">+ Add Card</button>
+//             <input name="scoringFooter" value={form.scoringFooter} onChange={handleChange} placeholder="Footer Note" className="w-full mt-3 p-2 border rounded text-xs italic text-gray-500" />
+//           </div>
+//         </div>
+
+//         {/* --- 4. TABLES --- */}
+//         <div>
+//            <h3 className="font-bold text-xl mb-4 text-gray-700">Test Structure Tables <span className="text-red-500">*</span></h3>
+//            <input 
+//              name="structureHeading" 
+//              value={form.structureHeading} 
+//              onChange={handleChange} 
+//              className={`w-full mb-4 p-2 border rounded font-bold text-lg bg-gray-50 ${!form.structureHeading ? 'border-red-300' : 'border-gray-300'}`}
+//            />
+
+//            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+//              {/* Middle Table */}
+//              <div className="border p-4 rounded-xl shadow-sm">
+//                 <h4 className="font-bold text-blue-600 mb-2">Middle Level (5th - 7th)</h4>
+//                 {form.middleTable.map((row, i) => (
+//                   <div key={i} className="flex gap-2 mb-2 items-center">
+//                     <input value={row.section} onChange={(e)=>handleArrayChange(i,'section',e.target.value,'middleTable')} placeholder="Section" className={`flex-1 p-2 border rounded text-sm ${!row.section ? 'border-red-300' : 'border-gray-300'}`} />
+//                     <input value={row.time} onChange={(e)=>handleArrayChange(i,'time',e.target.value,'middleTable')} placeholder="Time" className={`w-20 p-2 border rounded text-sm ${!row.time ? 'border-red-300' : 'border-gray-300'}`} />
+//                     <input value={row.questions} onChange={(e)=>handleArrayChange(i,'questions',e.target.value,'middleTable')} placeholder="Ques" className={`w-20 p-2 border rounded text-sm ${!row.questions ? 'border-red-300' : 'border-gray-300'}`} />
+//                     <button onClick={()=>removeItem(i, 'middleTable')} className="text-red-400 font-bold px-1">✕</button>
+//                   </div>
+//                 ))}
+//                 <button onClick={()=>addItem('middleTable', { section: "", time: "", questions: "" })} className="text-blue-600 text-sm font-semibold">+ Add Row</button>
+//              </div>
+
+//              {/* Upper Table */}
+//              <div className="border p-4 rounded-xl shadow-sm">
+//                 <h4 className="font-bold text-green-600 mb-2">Upper Level (8th - 11th)</h4>
+//                 {form.upperTable.map((row, i) => (
+//                   <div key={i} className="flex gap-2 mb-2 items-center">
+//                     <input value={row.section} onChange={(e)=>handleArrayChange(i,'section',e.target.value,'upperTable')} placeholder="Section" className={`flex-1 p-2 border rounded text-sm ${!row.section ? 'border-red-300' : 'border-gray-300'}`} />
+//                     <input value={row.time} onChange={(e)=>handleArrayChange(i,'time',e.target.value,'upperTable')} placeholder="Time" className={`w-20 p-2 border rounded text-sm ${!row.time ? 'border-red-300' : 'border-gray-300'}`} />
+//                     <input value={row.questions} onChange={(e)=>handleArrayChange(i,'questions',e.target.value,'upperTable')} placeholder="Ques" className={`w-20 p-2 border rounded text-sm ${!row.questions ? 'border-red-300' : 'border-gray-300'}`} />
+//                     <button onClick={()=>removeItem(i, 'upperTable')} className="text-red-400 font-bold px-1">✕</button>
+//                   </div>
+//                 ))}
+//                 <button onClick={()=>addItem('upperTable', { section: "", time: "", questions: "" })} className="text-blue-600 text-sm font-semibold">+ Add Row</button>
+//              </div>
+//            </div>
+//         </div>
+
+//         {/* --- ACTION BUTTONS --- */}
+//         <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200 sticky bottom-0 bg-white p-4 z-10">
+//           <button 
+//             onClick={handleUpdate} 
+//             disabled={loading} 
+//             className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-md hover:shadow-lg transition flex justify-center items-center gap-2"
+//           >
+//             {loading ? "Processing..." : "💾 Update / Save Changes"}
+//           </button>
+//           <button 
+//             onClick={handleDelete} 
+//             disabled={loading} 
+//             className="px-6 py-3 border-2 border-red-100 text-red-600 font-bold rounded-xl hover:bg-red-50 hover:border-red-200 transition"
+//           >
+//             🗑️ Delete All
+//           </button>
+//         </div>
+
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import { toast } from "react-toastify";
+
+// export default function SSATAdminPanel() {
+//   const [loading, setLoading] = useState(false);
+//   const token = localStorage.getItem("educationToken");
+
+//   // --- INITIAL STATE ---
+//   const initialState = {
+//     // 1. Hero
+//     heroTitle: "",          
+//     heroDescription: "",    
+//     topCtaText: "",         
+
+//     // 2. About
+//     aboutHeading: "",
+//     aboutDescription: "",   
+
+//     // 3. Levels (Array)
+//     levels: [],             
+    
+//     // 4. Registration
+//     registrationHeading: "",
+//     registrationContent: "",
+
+//     // 5. Comparison
+//     comparisonHeading: "",
+//     comparisonDescription: "", // ADDED THIS FIELD
+//     comparisonPoints: [],   
+
+//     // 6. Scoring (Array)
+//     scoringHeading: "",
+//     scoringCards: [],       
+//     scoringFooter: "",
+
+//     // 7. Facts
+//     factsHeading: "",
+//     factsContent: "",
+//     disclaimer: "",
+
+//     // 8. Structure (Tables)
+//     structureHeading: "",
+//     middleTable: [],        
+//     upperTable: [],          
+
+//     // 9. Good Score & Footer
+//     goodScoreHeading: "",
+//     goodScoreIntro: "",
+//     scaledScoresContent: "",
+//     percentileRanksContent: "",
+//     footerCtaText: ""       
+//   };
+
+//   const [form, setForm] = useState(initialState);
+
+//   // --- FETCH DATA ---
+//   const fetchData = async () => {
+//     try {
+//       setLoading(true);
+//       const res = await axios.get(
+//         `${import.meta.env.VITE_APP_URL}api/admin/ssat-test`,
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+//       if (res.data.data) {
+//         const data = res.data.data;
+//         setForm({
+//             ...initialState,
+//             ...data,
+//             levels: data.levels || [],
+//             comparisonPoints: data.comparisonPoints || [], 
+//             scoringCards: data.scoringCards || [],         
+//             middleTable: data.middleTable || [],
+//             upperTable: data.upperTable || []
+//         });
+//       }
+//     } catch (err) {
+//       toast.error("Failed to load existing data");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchData();
+//   }, []);
+
+//   // --- HANDLERS ---
+//   const handleChange = (e) => {
+//     setForm({ ...form, [e.target.name]: e.target.value });
+//   };
+
+//   const handleArrayChange = (index, field, value, arrayName) => {
+//     const updated = [...form[arrayName]];
+//     updated[index][field] = value;
+//     setForm({ ...form, [arrayName]: updated });
+//   };
+
+//   const handleSimpleListChange = (index, value, arrayName) => {
+//     const updated = [...form[arrayName]];
+//     updated[index] = value;
+//     setForm({ ...form, [arrayName]: updated });
+//   };
+
+//   const addItem = (arrayName, template) => {
+//     setForm({ ...form, [arrayName]: [...form[arrayName], template] });
+//   };
+
+//   const removeItem = (index, arrayName) => {
+//     const updated = form[arrayName].filter((_, i) => i !== index);
+//     setForm({ ...form, [arrayName]: updated });
+//   };
+
+//   // --- SAVE DATA ---
+//   const handleSubmit = async () => {
+//     try {
+//       setLoading(true);
+//       const res = await axios.post(
+//         `${import.meta.env.VITE_APP_URL}api/admin/ssat-test`,
+//         form,
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+//       toast.success(res.data.message || "Saved Successfully!");
+//     } catch (err) {
+//       toast.error("Update failed. Check connection.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="bg-gray-100 min-h-screen p-6 flex justify-center">
+//       <div className="bg-white w-full max-w-5xl rounded-xl shadow-lg border border-gray-200 p-8 space-y-8">
+        
+//         <h1 className="text-2xl font-bold text-blue-900 border-b pb-4">Edit SSAT Page</h1>
+
+//         {/* 1. Hero */}
+//         <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+//             <h3 className="font-bold text-lg mb-4 text-blue-800">1. Hero Section</h3>
+//             <div className="space-y-3">
+//                 <input name="heroTitle" value={form.heroTitle} onChange={handleChange} placeholder="Main Title" className="w-full p-2 border rounded" />
+//                 <textarea name="heroDescription" value={form.heroDescription} onChange={handleChange} placeholder="Intro Paragraph..." className="w-full p-2 border rounded" rows={3} />
+//                 <input name="topCtaText" value={form.topCtaText} onChange={handleChange} placeholder="Top CTA Text" className="w-full p-2 border rounded border-blue-300" />
+//             </div>
+//         </div>
+
+//         {/* 2. About & Levels */}
+//         <div className="grid grid-cols-2 gap-6">
+//             <div className="bg-gray-50 p-4 rounded border">
+//                 <h3 className="font-bold mb-2">2. About Section</h3>
+//                 <input name="aboutHeading" value={form.aboutHeading} onChange={handleChange} placeholder="Heading" className="w-full mb-2 p-2 border rounded" />
+//                 <textarea name="aboutDescription" value={form.aboutDescription} onChange={handleChange} placeholder="Content" className="w-full p-2 border rounded" rows={4} />
+//             </div>
+
+//             <div className="bg-gray-50 p-4 rounded border">
+//                 <h3 className="font-bold mb-2">3. Levels</h3>
+//                 {form.levels.map((lvl, i) => (
+//                     <div key={i} className="flex gap-2 mb-2 bg-white p-2 rounded border">
+//                         <input value={lvl.title} onChange={(e)=>handleArrayChange(i, 'title', e.target.value, 'levels')} placeholder="Title" className="w-1/3 p-1 border rounded text-sm" />
+//                         <textarea value={lvl.description} onChange={(e)=>handleArrayChange(i, 'description', e.target.value, 'levels')} placeholder="Desc" className="flex-1 p-1 border rounded text-sm" rows={2}/>
+//                         <button onClick={()=>removeItem(i, 'levels')} className="text-red-500 font-bold px-2">x</button>
+//                     </div>
+//                 ))}
+//                 <button onClick={()=>addItem('levels', {title: "", description: ""})} className="text-blue-600 text-sm font-bold">+ Add Level Box</button>
+//             </div>
+//         </div>
+
+//         {/* 4. Registration */}
+//         <div className="bg-gray-50 p-4 rounded border">
+//             <h3 className="font-bold mb-2">4. Registration</h3>
+//             <input name="registrationHeading" value={form.registrationHeading} onChange={handleChange} placeholder="Heading" className="w-full mb-2 p-2 border rounded" />
+//             <textarea name="registrationContent" value={form.registrationContent} onChange={handleChange} placeholder="Content" className="w-full p-2 border rounded" rows={3} />
+//         </div>
+
+//         {/* 5. Comparison (ISEE vs SSAT) */}
+//         <div className="bg-orange-50 p-4 rounded border border-orange-200">
+//             <h3 className="font-bold mb-2 text-orange-800">5. Comparison (ISEE vs SSAT)</h3>
+//             <input name="comparisonHeading" value={form.comparisonHeading} onChange={handleChange} placeholder="Heading (e.g. What's the difference...)" className="w-full mb-2 p-2 border rounded font-bold" />
+            
+//             {/* Added Description Field */}
+//             <textarea name="comparisonDescription" value={form.comparisonDescription} onChange={handleChange} placeholder="Intro text (Both the ISEE and the SSAT are used...)" className="w-full mb-3 p-2 border rounded" rows={3} />
+
+//             <label className="text-xs font-bold text-gray-500">Bullet Points:</label>
+//             {form.comparisonPoints.map((point, i) => (
+//                 <div key={i} className="flex gap-2 mb-2">
+//                     <span className="mt-2">•</span>
+//                     <input value={point} onChange={(e)=>handleSimpleListChange(i, e.target.value, 'comparisonPoints')} placeholder="Point text..." className="w-full p-2 border rounded" />
+//                     <button onClick={()=>removeItem(i, 'comparisonPoints')} className="text-red-500 font-bold px-2">x</button>
+//                 </div>
+//             ))}
+//             <button onClick={()=>addItem('comparisonPoints', "")} className="text-orange-600 text-sm font-bold">+ Add Point</button>
+//         </div>
+
+//         {/* 7. Quick Facts (MOVED UP FOR VISIBILITY) */}
+//         <div className="bg-teal-50 p-4 rounded border border-teal-200">
+//             <h3 className="font-bold mb-2 text-teal-800">7. Quick Facts (Image Content)</h3>
+//             <input name="factsHeading" value={form.factsHeading} onChange={handleChange} placeholder="Heading (SSAT quick facts)" className="w-full mb-2 p-2 border rounded font-bold" />
+//             <textarea name="factsContent" value={form.factsContent} onChange={handleChange} placeholder="Paste the content here (Frequency, Duration...). Use Enter for new lines." className="w-full p-2 border rounded" rows={5} />
+//             <input name="disclaimer" value={form.disclaimer} onChange={handleChange} placeholder="Disclaimer (Test names are trademarks...)" className="w-full mt-2 p-2 border rounded text-xs italic" />
+//         </div>
+
+//         {/* 6. Scoring */}
+//         <div className="bg-purple-50 p-4 rounded border border-purple-200">
+//             <h3 className="font-bold mb-2 text-purple-800">6. Scoring Cards</h3>
+//             <input name="scoringHeading" value={form.scoringHeading} onChange={handleChange} placeholder="Heading" className="w-full mb-3 p-2 border rounded" />
+//             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+//                 {form.scoringCards.map((card, i) => (
+//                     <div key={i} className="bg-white p-3 rounded border shadow-sm relative">
+//                         <button onClick={()=>removeItem(i, 'scoringCards')} className="absolute top-1 right-1 text-red-500 font-bold text-xs">x</button>
+//                         <input value={card.title} onChange={(e)=>handleArrayChange(i, 'title', e.target.value, 'scoringCards')} placeholder="Card Title" className="w-full mb-2 p-1 border rounded text-sm font-bold" />
+//                         <textarea value={card.content} onChange={(e)=>handleArrayChange(i, 'content', e.target.value, 'scoringCards')} placeholder="Content..." className="w-full p-1 border rounded text-xs" rows={4} />
+//                     </div>
+//                 ))}
+//             </div>
+//             <button onClick={()=>addItem('scoringCards', {title: "", content: ""})} className="mt-2 text-purple-600 text-sm font-bold">+ Add Scoring Card</button>
+//             <input name="scoringFooter" value={form.scoringFooter} onChange={handleChange} placeholder="Footer Note" className="w-full mt-3 p-2 border rounded text-sm italic" />
+//         </div>
+
+//         {/* 8. Structure Tables */}
+//         <div className="bg-gray-50 p-4 rounded border">
+//             <h3 className="font-bold mb-2">8. Test Structure</h3>
+//             <input name="structureHeading" value={form.structureHeading} onChange={handleChange} placeholder="Structure Heading" className="w-full mb-4 p-2 border rounded" />
+//             <div className="grid grid-cols-2 gap-4">
+//                 <div>
+//                     <h4 className="font-bold text-sm mb-1 text-blue-600">Middle Level</h4>
+//                     {form.middleTable.map((row, i) => (
+//                         <div key={i} className="flex gap-1 mb-1">
+//                             <input value={row.section} onChange={(e)=>handleArrayChange(i, 'section', e.target.value, 'middleTable')} placeholder="Sec" className="w-full p-1 border rounded text-xs" />
+//                             <input value={row.time} onChange={(e)=>handleArrayChange(i, 'time', e.target.value, 'middleTable')} placeholder="Time" className="w-16 p-1 border rounded text-xs" />
+//                             <input value={row.questions} onChange={(e)=>handleArrayChange(i, 'questions', e.target.value, 'middleTable')} placeholder="Q" className="w-16 p-1 border rounded text-xs" />
+//                             <button onClick={()=>removeItem(i, 'middleTable')} className="text-red-500 text-xs">x</button>
+//                         </div>
+//                     ))}
+//                     <button onClick={()=>addItem('middleTable', {section: "", time: "", questions: ""})} className="text-blue-600 text-xs font-bold">+ Add Row</button>
+//                 </div>
+//                 <div>
+//                     <h4 className="font-bold text-sm mb-1 text-green-600">Upper Level</h4>
+//                     {form.upperTable.map((row, i) => (
+//                         <div key={i} className="flex gap-1 mb-1">
+//                             <input value={row.section} onChange={(e)=>handleArrayChange(i, 'section', e.target.value, 'upperTable')} placeholder="Sec" className="w-full p-1 border rounded text-xs" />
+//                             <input value={row.time} onChange={(e)=>handleArrayChange(i, 'time', e.target.value, 'upperTable')} placeholder="Time" className="w-16 p-1 border rounded text-xs" />
+//                             <input value={row.questions} onChange={(e)=>handleArrayChange(i, 'questions', e.target.value, 'upperTable')} placeholder="Q" className="w-16 p-1 border rounded text-xs" />
+//                             <button onClick={()=>removeItem(i, 'upperTable')} className="text-red-500 text-xs">x</button>
+//                         </div>
+//                     ))}
+//                     <button onClick={()=>addItem('upperTable', {section: "", time: "", questions: ""})} className="text-blue-600 text-xs font-bold">+ Add Row</button>
+//                 </div>
+//             </div>
+//         </div>
+
+//         {/* 9. Good Score */}
+//         <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+//             <h3 className="font-bold text-lg mb-4 text-red-800">9. Good Score & Footer</h3>
+//             <div className="space-y-3">
+//                 <input name="goodScoreHeading" value={form.goodScoreHeading} onChange={handleChange} placeholder="Heading" className="w-full p-2 border rounded font-bold" />
+//                 <textarea name="goodScoreIntro" value={form.goodScoreIntro} onChange={handleChange} placeholder="Intro Text" className="w-full p-2 border rounded" rows={3} />
+//                 <textarea name="scaledScoresContent" value={form.scaledScoresContent} onChange={handleChange} placeholder="Scaled Scores Details" className="w-full p-2 border rounded" rows={3} />
+//                 <textarea name="percentileRanksContent" value={form.percentileRanksContent} onChange={handleChange} placeholder="Percentile Ranks Details" className="w-full p-2 border rounded" rows={3} />
+//                 <input name="footerCtaText" value={form.footerCtaText} onChange={handleChange} placeholder="Footer CTA Text" className="w-full p-2 border rounded border-red-300" />
+//             </div>
+//         </div>
+
+//         <button onClick={handleSubmit} disabled={loading} className="w-full bg-blue-600 text-white p-4 rounded-xl font-bold text-lg hover:bg-blue-700 shadow-md">
+//             {loading ? "Saving Data..." : "💾 Save All Changes"}
+//         </button>
+
+//       </div>
+//     </div>
+//   );
+// }
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export default function SSATtestpage() {
+export default function SSATAdminPanel() {
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("educationToken");
 
-  // --- Initial Empty State ---
+  // --- INITIAL STATE ---
   const initialState = {
-    heroTitle: "",
-    heroDescription: "",
+    // 1. Hero
+    heroTitle: "",          
+    heroDescription: "",    
+    topCtaText: "",         
+
+    // 2. About
     aboutHeading: "",
-    aboutDescription: "",
-    levels: [{ title: "", description: "" }], 
+    aboutDescription: "",   
+
+    // 3. Levels (Array)
+    levels: [],             
+    
+    // 4. Registration
+    registrationHeading: "",
+    registrationContent: "",
+
+    // 5. Comparison
     comparisonHeading: "",
-    comparisonPoints: [""], 
+    comparisonDescription: "", 
+    comparisonPoints: [],   
+
+    // 6. Scoring (Array)
     scoringHeading: "",
-    scoringCards: [{ title: "", content: "" }], 
+    scoringCards: [],       
     scoringFooter: "",
+
+    // 7. Facts
+    factsHeading: "",
+    factsContent: "",
+    disclaimer: "",
+
+    // 8. Structure (Tables)
     structureHeading: "",
-    middleTable: [{ section: "", time: "", questions: "" }],
-    upperTable: [{ section: "", time: "", questions: "" }],
+    middleTable: [],        
+    upperTable: [],          
+
+    // 9. Good Score & Footer
+    goodScoreHeading: "",
+    goodScoreIntro: "",
+    scaledScoresContent: "",
+    percentileRanksContent: "",
+    footerCtaText: ""       
   };
 
   const [form, setForm] = useState(initialState);
 
-  // --- 1. FETCH DATA ---
+  // --- FETCH DATA ---
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -310,9 +985,18 @@ export default function SSATtestpage() {
         `${import.meta.env.VITE_APP_URL}api/admin/ssat-test`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
       if (res.data.data) {
-        setForm({ ...initialState, ...res.data.data }); 
+        const data = res.data.data;
+        // Merge fetched data with initial state to handle missing fields
+        setForm({
+            ...initialState,
+            ...data,
+            levels: data.levels || [],
+            comparisonPoints: data.comparisonPoints || [], 
+            scoringCards: data.scoringCards || [],         
+            middleTable: data.middleTable || [],
+            upperTable: data.upperTable || []
+        });
       }
     } catch (err) {
       toast.error("Failed to load existing data");
@@ -325,18 +1009,25 @@ export default function SSATtestpage() {
     fetchData();
   }, []);
 
-  // --- 2. HANDLERS ---
-
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  // --- HANDLERS ---
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleArrayChange = (index, field, value, arrayName) => {
     const updated = [...form[arrayName]];
     updated[index][field] = value;
     setForm({ ...form, [arrayName]: updated });
   };
-  
-  const addItem = (arrayName, itemTemplate) => {
-    setForm({ ...form, [arrayName]: [...form[arrayName], itemTemplate] });
+
+  const handleSimpleListChange = (index, value, arrayName) => {
+    const updated = [...form[arrayName]];
+    updated[index] = value;
+    setForm({ ...form, [arrayName]: updated });
+  };
+
+  const addItem = (arrayName, template) => {
+    setForm({ ...form, [arrayName]: [...form[arrayName], template] });
   };
 
   const removeItem = (index, arrayName) => {
@@ -344,299 +1035,158 @@ export default function SSATtestpage() {
     setForm({ ...form, [arrayName]: updated });
   };
 
-  const handlePointChange = (index, value) => {
-    const updated = [...form.comparisonPoints];
-    updated[index] = value;
-    setForm({ ...form, comparisonPoints: updated });
-  };
-  const addPoint = () => setForm({ ...form, comparisonPoints: [...form.comparisonPoints, ""] });
-  const removePoint = (index) => setForm({ ...form, comparisonPoints: form.comparisonPoints.filter((_, i) => i !== index) });
-
-
-  // --- 3. VALIDATION & SAVE LOGIC ---
-  const handleUpdate = async () => {
-    // --- Validation Start ---
-    
-    // 1. Basic Fields
-    if (!form.heroTitle.trim()) return toast.error("Hero Title is required!");
-    if (!form.heroDescription.trim()) return toast.error("Hero Description is required!");
-    if (!form.aboutHeading.trim()) return toast.error("About Heading is required!");
-    if (!form.aboutDescription.trim()) return toast.error("About Description is required!");
-    if (!form.comparisonHeading.trim()) return toast.error("Comparison Heading is required!");
-    if (!form.scoringHeading.trim()) return toast.error("Scoring Heading is required!");
-    if (!form.structureHeading.trim()) return toast.error("Structure Heading is required!");
-    
-    // 2. Clean and Check Lists (Levels)
-    const validLevels = form.levels.filter(l => l.title.trim() !== "" && l.description.trim() !== "");
-    if (validLevels.length === 0) return toast.error("At least one Level Box is required!");
-
-    // 3. Clean Comparison Points
-    const validComparisonPoints = form.comparisonPoints.filter(p => p.trim() !== "");
-    if (validComparisonPoints.length === 0) return toast.error("At least one Comparison Point is required!");
-
-    // 4. Clean Scoring Cards
-    const validScoringCards = form.scoringCards.filter(c => c.title.trim() !== "" && c.content.trim() !== "");
-    if (validScoringCards.length === 0) return toast.error("At least one Scoring Card is required!");
-
-    // 5. Clean Tables
-    const validMiddleTable = form.middleTable.filter(r => r.section.trim() !== "" && r.time.trim() !== "" && r.questions.trim() !== "");
-    const validUpperTable = form.upperTable.filter(r => r.section.trim() !== "" && r.time.trim() !== "" && r.questions.trim() !== "");
-
-    if (validMiddleTable.length === 0) return toast.error("Middle Level Table cannot be empty!");
-    if (validUpperTable.length === 0) return toast.error("Upper Level Table cannot be empty!");
-
-    // Prepare Clean Payload
-    const dataToSend = {
-      ...form,
-      levels: validLevels,
-      comparisonPoints: validComparisonPoints,
-      scoringCards: validScoringCards,
-      middleTable: validMiddleTable,
-      upperTable: validUpperTable
-    };
-    // --- Validation End ---
-
+  // --- SAVE DATA ---
+  const handleSubmit = async () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        `${import.meta.env.VITE_APP_URL}api/admin/ssat-test`, 
-        dataToSend, 
-        {
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        }
+        `${import.meta.env.VITE_APP_URL}api/admin/ssat-test`,
+        form,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success(res.data.message || "Data Updated Successfully!");
-      
-      // Update local form state with clean data
-      setForm(dataToSend);
-      
+      toast.success(res.data.message || "Saved Successfully!");
     } catch (err) {
-      toast.error("Update failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // --- 4. DELETE ACTION ---
-  const handleDelete = async () => {
-    if (!window.confirm("Are you sure? This will delete ALL SSAT page data.")) return;
-    try {
-      setLoading(true);
-      await axios.delete(`${import.meta.env.VITE_APP_URL}api/admin/ssat-test`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      toast.success("All Data Deleted Successfully");
-      setForm(initialState); 
-    } catch (err) {
-      toast.error("Delete failed");
+      toast.error("Update failed. Check connection.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-gray-50 p-6 flex flex-col items-center min-h-screen">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-6xl border-t-4 border-blue-600 p-8">
+    <div className="bg-gray-100 min-h-screen p-6 flex justify-center">
+      <div className="bg-white w-full max-w-5xl rounded-xl shadow-lg border border-gray-200 p-8 space-y-8">
         
-        <div className="flex justify-between items-center mb-8 border-b pb-4">
-            <h2 className="text-3xl font-bold text-blue-800">SSAT PreTest Section</h2>
-            <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-                {loading ? "Syncing..." : "Edit Mode Active"}
-            </span>
-        </div>
+        <h1 className="text-2xl font-bold text-blue-900 border-b pb-4">Edit SSAT Page</h1>
 
-        {/* --- 1. HERO & ABOUT --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 pb-6 border-b border-gray-100">
-          <div>
-            <h3 className="font-bold text-lg mb-2 text-gray-700">Hero Section <span className="text-red-500">*</span></h3>
-            <label className="text-xs text-gray-500">Main Title</label>
-            <input 
-              name="heroTitle" 
-              value={form.heroTitle} 
-              onChange={handleChange} 
-              placeholder="SSAT TEST PREP" 
-              className={`w-full mb-3 p-2 border rounded outline-none ${!form.heroTitle ? 'border-red-300' : 'border-gray-300'}`}
-            />
-            <label className="text-xs text-gray-500">Description</label>
-            <textarea 
-              name="heroDescription" 
-              value={form.heroDescription} 
-              onChange={handleChange} 
-              placeholder="At GGES..." 
-              rows={3} 
-              className={`w-full p-2 border rounded outline-none ${!form.heroDescription ? 'border-red-300' : 'border-gray-300'}`}
-            />
-          </div>
-          <div>
-            <h3 className="font-bold text-lg mb-2 text-gray-700">About Section <span className="text-red-500">*</span></h3>
-            <label className="text-xs text-gray-500">Heading</label>
-            <input 
-              name="aboutHeading" 
-              value={form.aboutHeading} 
-              onChange={handleChange} 
-              placeholder="ABOUT SSAT" 
-              className={`w-full mb-3 p-2 border rounded outline-none ${!form.aboutHeading ? 'border-red-300' : 'border-gray-300'}`}
-            />
-            <label className="text-xs text-gray-500">Description</label>
-            <textarea 
-              name="aboutDescription" 
-              value={form.aboutDescription} 
-              onChange={handleChange} 
-              placeholder="Developed to..." 
-              rows={3} 
-              className={`w-full p-2 border rounded outline-none ${!form.aboutDescription ? 'border-red-300' : 'border-gray-300'}`}
-            />
-          </div>
-        </div>
-
-        {/* --- 2. LEVELS --- */}
-        <div className="mb-8 pb-6 border-b border-gray-100">
-          <h3 className="font-bold text-lg mb-4 text-gray-700">Levels (Elementary, Middle, Upper) <span className="text-red-500">*</span></h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {form.levels.map((level, i) => (
-              <div key={i} className="bg-blue-50 p-4 rounded-lg relative border border-blue-100 shadow-sm">
-                <button onClick={() => removeItem(i, 'levels')} className="absolute top-2 right-2 text-red-400 hover:text-red-600 font-bold">✕</button>
-                <input 
-                  value={level.title} 
-                  onChange={(e) => handleArrayChange(i, 'title', e.target.value, 'levels')} 
-                  placeholder="Title (e.g. Middle Level)" 
-                  className={`w-full mb-2 p-2 border rounded font-semibold text-sm ${!level.title ? 'border-red-300' : 'border-gray-300'}`}
-                />
-                <textarea 
-                  value={level.description} 
-                  onChange={(e) => handleArrayChange(i, 'description', e.target.value, 'levels')} 
-                  placeholder="Description..." 
-                  rows={4} 
-                  className={`w-full p-2 border rounded text-xs ${!level.description ? 'border-red-300' : 'border-gray-300'}`}
-                />
-              </div>
-            ))}
-          </div>
-          <button onClick={() => addItem('levels', { title: "", description: "" })} className="mt-3 text-blue-600 font-medium text-sm hover:underline">+ Add Level Box</button>
-        </div>
-
-        {/* --- 3. COMPARISON & SCORING --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 pb-6 border-b border-gray-100">
-          
-          {/* Comparison */}
-          <div>
-            <h3 className="font-bold text-lg mb-2 text-gray-700">SSAT vs ISEE Points <span className="text-red-500">*</span></h3>
-            <input 
-              name="comparisonHeading" 
-              value={form.comparisonHeading} 
-              onChange={handleChange} 
-              className={`w-full mb-3 p-2 border rounded font-semibold text-sm ${!form.comparisonHeading ? 'border-red-300' : 'border-gray-300'}`}
-            />
-            <ul className="space-y-2 bg-gray-50 p-3 rounded">
-              {form.comparisonPoints.map((pt, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="mt-2 text-xs">●</span>
-                  <input 
-                    value={pt} 
-                    onChange={(e) => handlePointChange(i, e.target.value)} 
-                    className={`w-full p-2 border rounded text-sm ${!pt ? 'border-red-300' : 'border-gray-300'}`}
-                  />
-                  <button onClick={() => removePoint(i)} className="text-red-400">✕</button>
-                </li>
-              ))}
-            </ul>
-            <button onClick={addPoint} className="mt-2 text-blue-600 text-sm hover:underline">+ Add Comparison Point</button>
-          </div>
-
-          {/* Scoring */}
-          <div>
-            <h3 className="font-bold text-lg mb-2 text-gray-700">Scoring Info <span className="text-red-500">*</span></h3>
-            <input 
-              name="scoringHeading" 
-              value={form.scoringHeading} 
-              onChange={handleChange} 
-              className={`w-full mb-3 p-2 border rounded font-semibold text-sm ${!form.scoringHeading ? 'border-red-300' : 'border-gray-300'}`}
-            />
+        {/* 1. Hero */}
+        <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+            <h3 className="font-bold text-lg mb-4 text-blue-800">1. Hero Section</h3>
             <div className="space-y-3">
-              {form.scoringCards.map((card, i) => (
-                <div key={i} className="flex gap-2 items-start border p-2 rounded bg-gray-50">
-                  <div className="flex-1">
-                    <input 
-                      value={card.title} 
-                      onChange={(e) => handleArrayChange(i, 'title', e.target.value, 'scoringCards')} 
-                      placeholder="e.g. Quantitative" 
-                      className={`w-full mb-1 p-1 border rounded text-sm font-bold ${!card.title ? 'border-red-300' : 'border-gray-300'}`}
-                    />
-                    <textarea 
-                      value={card.content} 
-                      onChange={(e) => handleArrayChange(i, 'content', e.target.value, 'scoringCards')} 
-                      placeholder="Scores..." 
-                      rows={2} 
-                      className={`w-full p-1 border rounded text-xs ${!card.content ? 'border-red-300' : 'border-gray-300'}`}
-                    />
-                  </div>
-                  <button onClick={() => removeItem(i, 'scoringCards')} className="text-red-400 mt-2">✕</button>
-                </div>
-              ))}
+                <input name="heroTitle" value={form.heroTitle} onChange={handleChange} placeholder="Main Title" className="w-full p-2 border rounded" />
+                <textarea name="heroDescription" value={form.heroDescription} onChange={handleChange} placeholder="Intro Paragraph..." className="w-full p-2 border rounded" rows={3} />
+                <input name="topCtaText" value={form.topCtaText} onChange={handleChange} placeholder="Top CTA Text" className="w-full p-2 border rounded border-blue-300" />
             </div>
-            <button onClick={() => addItem('scoringCards', { title: "", content: "" })} className="mt-2 text-blue-600 text-sm hover:underline">+ Add Card</button>
-            <input name="scoringFooter" value={form.scoringFooter} onChange={handleChange} placeholder="Footer Note" className="w-full mt-3 p-2 border rounded text-xs italic text-gray-500" />
-          </div>
         </div>
 
-        {/* --- 4. TABLES --- */}
-        <div>
-           <h3 className="font-bold text-xl mb-4 text-gray-700">Test Structure Tables <span className="text-red-500">*</span></h3>
-           <input 
-             name="structureHeading" 
-             value={form.structureHeading} 
-             onChange={handleChange} 
-             className={`w-full mb-4 p-2 border rounded font-bold text-lg bg-gray-50 ${!form.structureHeading ? 'border-red-300' : 'border-gray-300'}`}
-           />
+        {/* 2. About & Levels */}
+        <div className="grid grid-cols-2 gap-6">
+            <div className="bg-gray-50 p-4 rounded border">
+                <h3 className="font-bold mb-2">2. About Section</h3>
+                <input name="aboutHeading" value={form.aboutHeading} onChange={handleChange} placeholder="Heading" className="w-full mb-2 p-2 border rounded" />
+                <textarea name="aboutDescription" value={form.aboutDescription} onChange={handleChange} placeholder="Content" className="w-full p-2 border rounded" rows={4} />
+            </div>
 
-           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-             {/* Middle Table */}
-             <div className="border p-4 rounded-xl shadow-sm">
-                <h4 className="font-bold text-blue-600 mb-2">Middle Level (5th - 7th)</h4>
-                {form.middleTable.map((row, i) => (
-                  <div key={i} className="flex gap-2 mb-2 items-center">
-                    <input value={row.section} onChange={(e)=>handleArrayChange(i,'section',e.target.value,'middleTable')} placeholder="Section" className={`flex-1 p-2 border rounded text-sm ${!row.section ? 'border-red-300' : 'border-gray-300'}`} />
-                    <input value={row.time} onChange={(e)=>handleArrayChange(i,'time',e.target.value,'middleTable')} placeholder="Time" className={`w-20 p-2 border rounded text-sm ${!row.time ? 'border-red-300' : 'border-gray-300'}`} />
-                    <input value={row.questions} onChange={(e)=>handleArrayChange(i,'questions',e.target.value,'middleTable')} placeholder="Ques" className={`w-20 p-2 border rounded text-sm ${!row.questions ? 'border-red-300' : 'border-gray-300'}`} />
-                    <button onClick={()=>removeItem(i, 'middleTable')} className="text-red-400 font-bold px-1">✕</button>
-                  </div>
+            <div className="bg-gray-50 p-4 rounded border">
+                <h3 className="font-bold mb-2">3. Levels</h3>
+                {form.levels.map((lvl, i) => (
+                    <div key={i} className="flex gap-2 mb-2 bg-white p-2 rounded border">
+                        <input value={lvl.title} onChange={(e)=>handleArrayChange(i, 'title', e.target.value, 'levels')} placeholder="Title" className="w-1/3 p-1 border rounded text-sm" />
+                        <textarea value={lvl.description} onChange={(e)=>handleArrayChange(i, 'description', e.target.value, 'levels')} placeholder="Desc" className="flex-1 p-1 border rounded text-sm" rows={2}/>
+                        <button onClick={()=>removeItem(i, 'levels')} className="text-red-500 font-bold px-2">x</button>
+                    </div>
                 ))}
-                <button onClick={()=>addItem('middleTable', { section: "", time: "", questions: "" })} className="text-blue-600 text-sm font-semibold">+ Add Row</button>
-             </div>
+                <button onClick={()=>addItem('levels', {title: "", description: ""})} className="text-blue-600 text-sm font-bold">+ Add Level Box</button>
+            </div>
+        </div>
 
-             {/* Upper Table */}
-             <div className="border p-4 rounded-xl shadow-sm">
-                <h4 className="font-bold text-green-600 mb-2">Upper Level (8th - 11th)</h4>
-                {form.upperTable.map((row, i) => (
-                  <div key={i} className="flex gap-2 mb-2 items-center">
-                    <input value={row.section} onChange={(e)=>handleArrayChange(i,'section',e.target.value,'upperTable')} placeholder="Section" className={`flex-1 p-2 border rounded text-sm ${!row.section ? 'border-red-300' : 'border-gray-300'}`} />
-                    <input value={row.time} onChange={(e)=>handleArrayChange(i,'time',e.target.value,'upperTable')} placeholder="Time" className={`w-20 p-2 border rounded text-sm ${!row.time ? 'border-red-300' : 'border-gray-300'}`} />
-                    <input value={row.questions} onChange={(e)=>handleArrayChange(i,'questions',e.target.value,'upperTable')} placeholder="Ques" className={`w-20 p-2 border rounded text-sm ${!row.questions ? 'border-red-300' : 'border-gray-300'}`} />
-                    <button onClick={()=>removeItem(i, 'upperTable')} className="text-red-400 font-bold px-1">✕</button>
-                  </div>
+        {/* 4. Registration */}
+        {/* <div className="bg-gray-50 p-4 rounded border">
+            <h3 className="font-bold mb-2">4. Registration</h3>
+            <input name="registrationHeading" value={form.registrationHeading} onChange={handleChange} placeholder="Heading" className="w-full mb-2 p-2 border rounded" />
+            <textarea name="registrationContent" value={form.registrationContent} onChange={handleChange} placeholder="Content" className="w-full p-2 border rounded" rows={3} />
+        </div> */}
+
+        {/* 5. Comparison (ISEE vs SSAT) */}
+        <div className="bg-orange-50 p-4 rounded border border-orange-200">
+            <h3 className="font-bold mb-2 text-orange-800">5. Comparison (ISEE vs SSAT)</h3>
+            <input name="comparisonHeading" value={form.comparisonHeading} onChange={handleChange} placeholder="Heading (e.g. What's the difference...)" className="w-full mb-2 p-2 border rounded font-bold" />
+            
+            {/* Description Field */}
+            <textarea name="comparisonDescription" value={form.comparisonDescription} onChange={handleChange} placeholder="Intro text (Both the ISEE and the SSAT are used...)" className="w-full mb-3 p-2 border rounded" rows={3} />
+
+            <label className="text-xs font-bold text-gray-500">Bullet Points:</label>
+            {form.comparisonPoints.map((point, i) => (
+                <div key={i} className="flex gap-2 mb-2">
+                    <span className="mt-2">•</span>
+                    <input value={point} onChange={(e)=>handleSimpleListChange(i, e.target.value, 'comparisonPoints')} placeholder="Point text..." className="w-full p-2 border rounded" />
+                    <button onClick={()=>removeItem(i, 'comparisonPoints')} className="text-red-500 font-bold px-2">x</button>
+                </div>
+            ))}
+            <button onClick={()=>addItem('comparisonPoints', "")} className="text-orange-600 text-sm font-bold">+ Add Point</button>
+        </div>
+
+        {/* 7. Quick Facts */}
+        <div className="bg-teal-50 p-4 rounded border border-teal-200">
+            <h3 className="font-bold mb-2 text-teal-800">7. Quick Facts</h3>
+            <input name="factsHeading" value={form.factsHeading} onChange={handleChange} placeholder="Heading (SSAT quick facts)" className="w-full mb-2 p-2 border rounded font-bold" />
+            <textarea name="factsContent" value={form.factsContent} onChange={handleChange} placeholder="Paste the content here (Frequency, Duration...). Use Enter for new lines." className="w-full p-2 border rounded" rows={5} />
+            <input name="disclaimer" value={form.disclaimer} onChange={handleChange} placeholder="Disclaimer (Test names are trademarks...)" className="w-full mt-2 p-2 border rounded text-xs italic" />
+        </div>
+
+        {/* 6. Scoring */}
+        <div className="bg-purple-50 p-4 rounded border border-purple-200">
+            <h3 className="font-bold mb-2 text-purple-800">6. Scoring Cards</h3>
+            <input name="scoringHeading" value={form.scoringHeading} onChange={handleChange} placeholder="Heading" className="w-full mb-3 p-2 border rounded" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                {form.scoringCards.map((card, i) => (
+                    <div key={i} className="bg-white p-3 rounded border shadow-sm relative">
+                        <button onClick={()=>removeItem(i, 'scoringCards')} className="absolute top-1 right-1 text-red-500 font-bold text-xs">x</button>
+                        <input value={card.title} onChange={(e)=>handleArrayChange(i, 'title', e.target.value, 'scoringCards')} placeholder="Card Title" className="w-full mb-2 p-1 border rounded text-sm font-bold" />
+                        <textarea value={card.content} onChange={(e)=>handleArrayChange(i, 'content', e.target.value, 'scoringCards')} placeholder="Content..." className="w-full p-1 border rounded text-xs" rows={4} />
+                    </div>
                 ))}
-                <button onClick={()=>addItem('upperTable', { section: "", time: "", questions: "" })} className="text-blue-600 text-sm font-semibold">+ Add Row</button>
-             </div>
-           </div>
+            </div>
+            <button onClick={()=>addItem('scoringCards', {title: "", content: ""})} className="mt-2 text-purple-600 text-sm font-bold">+ Add Scoring Card</button>
+            <input name="scoringFooter" value={form.scoringFooter} onChange={handleChange} placeholder="Footer Note" className="w-full mt-3 p-2 border rounded text-sm italic" />
         </div>
 
-        {/* --- ACTION BUTTONS --- */}
-        <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200 sticky bottom-0 bg-white p-4 z-10">
-          <button 
-            onClick={handleUpdate} 
-            disabled={loading} 
-            className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-md hover:shadow-lg transition flex justify-center items-center gap-2"
-          >
-            {loading ? "Processing..." : "💾 Update / Save Changes"}
-          </button>
-          <button 
-            onClick={handleDelete} 
-            disabled={loading} 
-            className="px-6 py-3 border-2 border-red-100 text-red-600 font-bold rounded-xl hover:bg-red-50 hover:border-red-200 transition"
-          >
-            🗑️ Delete All
-          </button>
+        {/* 8. Structure Tables */}
+        <div className="bg-gray-50 p-4 rounded border">
+            <h3 className="font-bold mb-2">8. Test Structure</h3>
+            <input name="structureHeading" value={form.structureHeading} onChange={handleChange} placeholder="Structure Heading" className="w-full mb-4 p-2 border rounded" />
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <h4 className="font-bold text-sm mb-1 text-blue-600">Middle Level</h4>
+                    {form.middleTable.map((row, i) => (
+                        <div key={i} className="flex gap-1 mb-1">
+                            <input value={row.section} onChange={(e)=>handleArrayChange(i, 'section', e.target.value, 'middleTable')} placeholder="Sec" className="w-full p-1 border rounded text-xs" />
+                            <input value={row.time} onChange={(e)=>handleArrayChange(i, 'time', e.target.value, 'middleTable')} placeholder="Time" className="w-16 p-1 border rounded text-xs" />
+                            <input value={row.questions} onChange={(e)=>handleArrayChange(i, 'questions', e.target.value, 'middleTable')} placeholder="Q" className="w-16 p-1 border rounded text-xs" />
+                            <button onClick={()=>removeItem(i, 'middleTable')} className="text-red-500 text-xs">x</button>
+                        </div>
+                    ))}
+                    <button onClick={()=>addItem('middleTable', {section: "", time: "", questions: ""})} className="text-blue-600 text-xs font-bold">+ Add Row</button>
+                </div>
+                <div>
+                    <h4 className="font-bold text-sm mb-1 text-green-600">Upper Level</h4>
+                    {form.upperTable.map((row, i) => (
+                        <div key={i} className="flex gap-1 mb-1">
+                            <input value={row.section} onChange={(e)=>handleArrayChange(i, 'section', e.target.value, 'upperTable')} placeholder="Sec" className="w-full p-1 border rounded text-xs" />
+                            <input value={row.time} onChange={(e)=>handleArrayChange(i, 'time', e.target.value, 'upperTable')} placeholder="Time" className="w-16 p-1 border rounded text-xs" />
+                            <input value={row.questions} onChange={(e)=>handleArrayChange(i, 'questions', e.target.value, 'upperTable')} placeholder="Q" className="w-16 p-1 border rounded text-xs" />
+                            <button onClick={()=>removeItem(i, 'upperTable')} className="text-red-500 text-xs">x</button>
+                        </div>
+                    ))}
+                    <button onClick={()=>addItem('upperTable', {section: "", time: "", questions: ""})} className="text-blue-600 text-xs font-bold">+ Add Row</button>
+                </div>
+            </div>
         </div>
+
+        {/* 9. Good Score */}
+        <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+            <h3 className="font-bold text-lg mb-4 text-red-800">9. Good Score & Footer</h3>
+            <div className="space-y-3">
+                <input name="goodScoreHeading" value={form.goodScoreHeading} onChange={handleChange} placeholder="Heading" className="w-full p-2 border rounded font-bold" />
+                <textarea name="goodScoreIntro" value={form.goodScoreIntro} onChange={handleChange} placeholder="Intro Text" className="w-full p-2 border rounded" rows={3} />
+                <textarea name="scaledScoresContent" value={form.scaledScoresContent} onChange={handleChange} placeholder="Scaled Scores Details" className="w-full p-2 border rounded" rows={3} />
+                <textarea name="percentileRanksContent" value={form.percentileRanksContent} onChange={handleChange} placeholder="Percentile Ranks Details" className="w-full p-2 border rounded" rows={3} />
+                <input name="footerCtaText" value={form.footerCtaText} onChange={handleChange} placeholder="Footer CTA Text" className="w-full p-2 border rounded border-red-300" />
+            </div>
+        </div>
+
+        <button onClick={handleSubmit} disabled={loading} className="w-full bg-blue-600 text-white p-4 rounded-xl font-bold text-lg hover:bg-blue-700 shadow-md">
+            {loading ? "Saving Data..." : "💾 Save All Changes"}
+        </button>
 
       </div>
     </div>

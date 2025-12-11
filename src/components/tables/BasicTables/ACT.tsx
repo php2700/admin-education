@@ -11,6 +11,7 @@ export default function ActTestPrepAdmin() {
   const initialState = {
     heroTitle: "",
     heroDescription: "",
+     herosubtitle: "",
 
     aboutHeading: "",
     aboutDescription: "",
@@ -171,6 +172,14 @@ export default function ActTestPrepAdmin() {
             className="w-full p-2 border rounded"
             placeholder="Hero Description..."
           />
+            {/* <textarea
+            name="hero"
+            value={form.herosubtitle}
+            onChange={handleChange}
+            rows={1}
+            className="w-full p-2 border rounded"
+            placeholder="subtitle..."
+          /> */}
         </section>
 
         {/* --------------------------- ABOUT SECTION --------------------------- */}

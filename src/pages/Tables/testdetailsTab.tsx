@@ -7,12 +7,12 @@ export default function TestPrepDetails() {
   return (
     <>
       <PageMeta
-        title="Test Pre Detail"
-        description="Test Pre Detail"
+        title="SATTestDetail"
+        description="SATTestDetail  "
       />
-      <PageBreadcrumb pageTitle="Test Pre Detail " />
+      <PageBreadcrumb pageTitle="SATTestDetail " />
       <div className="space-y-6">
-        <ComponentCard title="Test Pre Detail">
+        <ComponentCard title="SATTestDetail">
           <TestPrepDetail />
         </ComponentCard>
       </div>
