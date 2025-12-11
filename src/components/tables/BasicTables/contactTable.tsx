@@ -161,7 +161,7 @@ export default function Contact() {
         {/* Address */}
         <div>
           <label className="font-semibold text-gray-700">Address</label>
-          <input
+          <textarea
             type="text"
             name="address"
             value={form.address}
