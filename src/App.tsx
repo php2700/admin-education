@@ -47,23 +47,24 @@ import LanguageTab from "./pages/Tables/languageTab";
 import TestImoTables from "./pages/Tables/testImonial";
 import FaqTables from "./pages/Tables/faq";
 import ContactText from "./pages/Tables/contact";
-import TermsTabs from "./pages/Tables/terms"
-import Managements from "./pages/Tables/managmentTab"
-import Testpres from "./pages/Tables/testpreTab"
-import TestPrepDetails from "./pages/Tables/testdetailsTab"
-import SSATtestDetails from "./pages/Tables/SSATtestTab" 
-import SHSATtestDetails from "./pages/Tables/SHSATtestTab"  
-import ISEEtestDetails from "./pages/Tables/IseeTestTab"
-import ELAtestDetails from "./pages/Tables/ELAtestTab"
-import ScatTestPrepAdmin from "./pages/Tables/ScatTestTab"
-import AMCtestDetails from "./pages/Tables/AmcTestTab"
-import KangarooDetails from "./pages/Tables/KangarooTestTab"
-import ACTtestDetails from "./pages/Tables/ActTestTab"
-import COGATtestDetails from "./pages/Tables/CogatTestTab"
-import SBACtestDetails from "./pages/Tables/SBACTestTab"
-import AccuplacerDetails from "./pages/Tables/AccuplacerTab"
-import STBTtestDetails from "./pages/Tables/STBTestTab"
-import PSATtestDetails from "./pages/Tables/PSATTab"
+import TermsTabs from "./pages/Tables/terms";
+import Managements from "./pages/Tables/managmentTab";
+import Testpres from "./pages/Tables/testpreTab";
+import TestPrepDetails from "./pages/Tables/testdetailsTab";
+import SSATtestDetails from "./pages/Tables/SSATtestTab";
+import SHSATtestDetails from "./pages/Tables/SHSATtestTab";
+import ISEEtestDetails from "./pages/Tables/IseeTestTab";
+import ELAtestDetails from "./pages/Tables/ELAtestTab";
+import ScatTestPrepAdmin from "./pages/Tables/ScatTestTab";
+import AMCtestDetails from "./pages/Tables/AmcTestTab";
+import KangarooDetails from "./pages/Tables/KangarooTestTab";
+import ACTtestDetails from "./pages/Tables/ActTestTab";
+import COGATtestDetails from "./pages/Tables/CogatTestTab";
+import SBACtestDetails from "./pages/Tables/SBACTestTab";
+import AccuplacerDetails from "./pages/Tables/AccuplacerTab";
+import STBTtestDetails from "./pages/Tables/STBTestTab";
+import PSATtestDetails from "./pages/Tables/PSATTab";
+import K12Tab from "./pages/Tables/k-12";
 export default function App() {
   return (
     <>
@@ -95,30 +96,30 @@ export default function App() {
             <Route path="/competition" element={<CompetitionTables />} />
             <Route path="/Kangaroo" element={<KangarooTab />} />
             <Route path="/science" element={<ScienceTab />} />
-            <Route path="/common-core-ela" element={<CommonCoreElaTab/>} />
-            <Route path="/common-english-language" element={<LanguageTab/>} />
+            <Route path="/common-core-ela" element={<CommonCoreElaTab />} />
+            <Route path="/common-english-language" element={<LanguageTab />} />
             <Route path="/about" element={<AboutTables />} />
-            <Route path="/testImonial" element={<TestImoTables/>} />
-            <Route path="/faq" element={<FaqTables/>} />
-            <Route path="/terms -services" element={<TermsTabs/>} />
-            <Route path="/Our-Managments" element={<Managements/>} />
-            <Route path="/Testprepration" element={<Testpres/>} />
-            <Route path="/contact-text" element={<ContactText/>} />
-            <Route path="/TestPrepDetails" element={<TestPrepDetails/>} />
-            <Route path="/SSATtestDetails" element={<SSATtestDetails/>} /> 
-            <Route path="/SHSATtestDetails" element={<SHSATtestDetails/>} />
-            <Route path="/ISEEtestDetails" element={<ISEEtestDetails/>} /> 
-            <Route path="/ELAtestDetails" element={<ELAtestDetails/>} /> 
-            <Route path="/ScatTestPrepAdmin" element={<ScatTestPrepAdmin/>} /> 
-            <Route path="/AMCtestDetails" element={<AMCtestDetails/>} /> 
-             <Route path="/KangarooDetails" element={<KangarooDetails/>} /> 
-             <Route path="/ACTtestDetails" element={<ACTtestDetails/>} /> 
-             <Route path="/COGATtestDetails" element={<COGATtestDetails/>} /> 
-             <Route path="/SBACtestDetails" element={<SBACtestDetails/>} /> 
-             <Route path="/AccuplacerDetails" element={<AccuplacerDetails/>} /> 
-             <Route path="/STBTtestDetails" element={<STBTtestDetails/>} /> 
-             <Route path="/PSATtestDetails" element={<PSATtestDetails/>} /> 
-
+            <Route path="/testImonial" element={<TestImoTables />} />
+            <Route path="/faq" element={<FaqTables />} />
+            <Route path="/terms -services" element={<TermsTabs />} />
+            <Route path="/Our-Managments" element={<Managements />} />
+            <Route path="/Testprepration" element={<Testpres />} />
+            <Route path="/contact-text" element={<ContactText />} />
+            <Route path="/TestPrepDetails" element={<TestPrepDetails />} />
+            <Route path="/SSATtestDetails" element={<SSATtestDetails />} />
+            <Route path="/SHSATtestDetails" element={<SHSATtestDetails />} />
+            <Route path="/ISEEtestDetails" element={<ISEEtestDetails />} />
+            <Route path="/ELAtestDetails" element={<ELAtestDetails />} />
+            <Route path="/ScatTestPrepAdmin" element={<ScatTestPrepAdmin />} />
+            <Route path="/AMCtestDetails" element={<AMCtestDetails />} />
+            <Route path="/KangarooDetails" element={<KangarooDetails />} />
+            <Route path="/ACTtestDetails" element={<ACTtestDetails />} />
+            <Route path="/COGATtestDetails" element={<COGATtestDetails />} />
+            <Route path="/SBACtestDetails" element={<SBACtestDetails />} />
+            <Route path="/AccuplacerDetails" element={<AccuplacerDetails />} />
+            <Route path="/STBTtestDetails" element={<STBTtestDetails />} />
+            <Route path="/PSATtestDetails" element={<PSATtestDetails />} />
+            <Route path="/k-12" element={<K12Tab />} />
 
             <Route path="/users" element={<UserTables />} />
 

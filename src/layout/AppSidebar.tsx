@@ -105,6 +105,11 @@ const navItems: NavItem[] = [
     ],
   },
   {
+     icon: <TableIcon />,
+    name: "K-12",
+    path: "/k-12",
+  },
+  {
     name: "Maths",
     icon: <TableIcon />,
     subItems: [
