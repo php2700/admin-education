@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
 export default function SbacTestPrepAdmin() {
   const [loading, setLoading] = useState(false);
@@ -163,13 +165,33 @@ export default function SbacTestPrepAdmin() {
           <label className="font-semibold text-sm">
             Description <ReqStar />
           </label>
-          <textarea
+          {/* <textarea
             name="heroDescription"
             rows={3}
             value={form.heroDescription}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-          />
+          /> */}
+          <ReactQuill
+  theme="snow"
+  value={form.heroDescription}
+  onChange={(value) =>
+    setForm({ ...form, heroDescription: value })
+  }
+  placeholder="Hero Description"
+  className="w-full bg-white rounded"
+  modules={{
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline"],
+      [{ color: [] }],
+      ["link"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["clean"],
+    ],
+  }}
+/>
+
         </div>
 
         {/* ABOUT */}

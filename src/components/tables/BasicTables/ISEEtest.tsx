@@ -2,6 +2,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+
+const quillModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline"],
+    [{ color: [] }],
+    ["link"],
+    ["clean"],
+  ],
+};
 
 export default function ISEETestPrepAdmin() {
   const [loading, setLoading] = useState(false);
@@ -24,7 +36,7 @@ export default function ISEETestPrepAdmin() {
     measureList: [{ title: "", description: "" }],
 
     registrationHeading: "",
-    registrationDescription: ""
+    registrationDescription: "",
   };
 
   const [form, setForm] = useState(initialState);
@@ -93,8 +105,7 @@ export default function ISEETestPrepAdmin() {
 
   // Save Data
   const handleSave = async () => {
-    if (!form.heroTitle.trim())
-      return toast.error("Hero Title is required!");
+    if (!form.heroTitle.trim()) return toast.error("Hero Title is required!");
 
     if (!form.aboutHeading.trim())
       return toast.error("About Heading required!");
@@ -121,7 +132,7 @@ export default function ISEETestPrepAdmin() {
       ...form,
       purposePoints: validPurpose,
       structureList: validStructure,
-      measureList: validMeasure
+      measureList: validMeasure,
     };
 
     try {
@@ -132,8 +143,8 @@ export default function ISEETestPrepAdmin() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -150,10 +161,9 @@ export default function ISEETestPrepAdmin() {
     if (!window.confirm("Delete ALL ISEE data?")) return;
     try {
       setLoading(true);
-      await axios.delete(
-        `${import.meta.env.VITE_APP_URL}api/admin/isee-test`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.delete(`${import.meta.env.VITE_APP_URL}api/admin/isee-test`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       toast.success("Deleted Successfully");
       setForm(initialState);
@@ -167,7 +177,6 @@ export default function ISEETestPrepAdmin() {
   return (
     <div className="bg-gray-50 p-6 flex justify-center">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-4xl p-8 border-t-4 border-blue-600">
-
         <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">
           ISEE Test Admin Panel
         </h1>
@@ -214,7 +223,6 @@ export default function ISEETestPrepAdmin() {
             rows={3}
             placeholder="About Description"
           />
-
         </section>
 
         {/* PURPOSE */}
@@ -331,7 +339,7 @@ export default function ISEETestPrepAdmin() {
 
           {form.measureList.map((item, i) => (
             <div key={i} className="p-4 border rounded mb-3 bg-green-50">
-              <input
+              {/* <input
                 value={item.title}
                 onChange={(e) =>
                   handleObjListChange(
@@ -343,6 +351,16 @@ export default function ISEETestPrepAdmin() {
                 }
                 className="w-full p-2 border rounded mb-2"
                 placeholder="Measure Title"
+              /> */}
+              <ReactQuill
+                value={item.title}
+                onChange={(value) =>
+                  handleObjListChange(i, "title", value, "measureList")
+                }
+                placeholder="Measure Title"
+                className="bg-white mb-2"
+                     theme="snow"
+                  modules={quillModules}
               />
 
               <textarea

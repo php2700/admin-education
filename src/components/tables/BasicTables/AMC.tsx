@@ -4,6 +4,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function AmcTestPrepAdmin() {
   const [loading, setLoading] = useState(false);
@@ -218,7 +220,24 @@ export default function AmcTestPrepAdmin() {
                  <input value={card.title} onChange={(e)=>handleCardChange(i, 'title', e.target.value)} placeholder="e.g. AMC 8" className="w-full mb-2 p-1 border rounded font-bold" />
                  
                      <label className="text-xs font-bold text-gray-500">amcDescription</label>
-                 <input value={card.amcDescription} onChange={(e)=>handleCardChange(i, 'amcDescription', e.target.value)} placeholder="e.g. AMC Description" className="w-full mb-2 p-1 border rounded font-bold" />
+                 {/* <input value={card.amcDescription} onChange={(e)=>handleCardChange(i, 'amcDescription', e.target.value)} placeholder="e.g. AMC Description" className="w-full mb-2 p-1 border rounded font-bold" /> */}
+                 <ReactQuill
+  theme="snow"
+  value={card.amcDescription}
+  onChange={(value) => handleCardChange(i, "amcDescription", value)}
+  placeholder="e.g. AMC Description"
+  className="w-full bg-white rounded mb-2 font-bold"
+  modules={{
+    toolbar: [
+      ["bold", "italic", "underline"],
+      [{ color: [] }],
+      ["link"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["clean"],
+    ],
+  }}
+/>
+
              
                  <label className="text-xs font-bold text-gray-500">Description</label>
                  <textarea value={card.description} onChange={(e)=>handleCardChange(i, 'description', e.target.value)} placeholder="25 questions..." rows={3} className="w-full mb-2 p-1 border rounded text-sm" />

@@ -2,8 +2,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+
+
 
 export default function ElaTestAdminPage() {
+ 
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("educationToken");
 
@@ -113,12 +118,9 @@ export default function ElaTestAdminPage() {
     if (!window.confirm("Delete all ELA data?")) return;
     try {
       setLoading(true);
-      await axios.delete(
-        `${import.meta.env.VITE_APP_URL}api/admin/ela-test`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.delete(`${import.meta.env.VITE_APP_URL}api/admin/ela-test`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       toast.success("Deleted successfully");
       setForm(initialState);
     } catch (err) {
@@ -165,17 +167,32 @@ export default function ElaTestAdminPage() {
             placeholder="Intro Heading"
             className="w-full mb-2 p-2 border rounded"
           />
-          <textarea
+          {/* <textarea
             name="introDescription"
             value={form.introDescription}
             onChange={handleChange}
             placeholder="Intro Description"
             rows={3}
             className="w-full p-2 border rounded"
+          /> */}
+          <ReactQuill
+            theme="snow"
+            value={form.introDescription}
+            onChange={(value) => setForm({ ...form, introDescription: value })}
+            placeholder="Intro Description"
+            className="w-full bg-white rounded"
+            modules={{
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline"],
+    [{ color: [] }],
+    ["link"],
+    ["clean"],
+  ],
+}}
+                           theme="snow"
           />
         </div>
-
- 
 
         {/* Administration Section */}
         <div className="mb-6">

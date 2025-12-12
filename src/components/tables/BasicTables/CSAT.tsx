@@ -1,8 +1,10 @@
-
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+
 
 export default function ScatTestAdminPage() {
   const [loading, setLoading] = useState(false);
@@ -15,7 +17,7 @@ export default function ScatTestAdminPage() {
     aboutHeading: "",
     aboutDescription: "",
     versionsHeading: "",
-    versionsList: [""] ,
+    versionsList: [""],
 
     formatHeading: "",
     formatDescription: "",
@@ -25,7 +27,7 @@ export default function ScatTestAdminPage() {
     scoringLevels: [{ title: "", details: "" }],
 
     tipsHeading: "",
-    tipsList: [""] ,
+    tipsList: [""],
 
     registerHeading: "",
     registerSubHeading: "",
@@ -194,7 +196,9 @@ export default function ScatTestAdminPage() {
               <input
                 type="text"
                 value={item}
-                onChange={(e) => handleArrayChange("versionsList", idx, e.target.value)}
+                onChange={(e) =>
+                  handleArrayChange("versionsList", idx, e.target.value)
+                }
                 className="flex-1 p-2 border rounded"
                 placeholder="Version"
               />
@@ -240,7 +244,12 @@ export default function ScatTestAdminPage() {
                 type="text"
                 value={item.title}
                 onChange={(e) =>
-                  handleObjectArrayChange("formatSections", idx, "title", e.target.value)
+                  handleObjectArrayChange(
+                    "formatSections",
+                    idx,
+                    "title",
+                    e.target.value
+                  )
                 }
                 placeholder="Title"
                 className="w-full mb-1 p-2 border rounded"
@@ -248,7 +257,12 @@ export default function ScatTestAdminPage() {
               <textarea
                 value={item.description}
                 onChange={(e) =>
-                  handleObjectArrayChange("formatSections", idx, "description", e.target.value)
+                  handleObjectArrayChange(
+                    "formatSections",
+                    idx,
+                    "description",
+                    e.target.value
+                  )
                 }
                 placeholder="Description"
                 rows={2}
@@ -263,7 +277,12 @@ export default function ScatTestAdminPage() {
             </div>
           ))}
           <button
-            onClick={() => addObjectArrayItem("formatSections", { title: "", description: "" })}
+            onClick={() =>
+              addObjectArrayItem("formatSections", {
+                title: "",
+                description: "",
+              })
+            }
             className="text-blue-600 text-sm"
           >
             + Add Section
@@ -287,7 +306,12 @@ export default function ScatTestAdminPage() {
                 type="text"
                 value={item.title}
                 onChange={(e) =>
-                  handleObjectArrayChange("scoringLevels", idx, "title", e.target.value)
+                  handleObjectArrayChange(
+                    "scoringLevels",
+                    idx,
+                    "title",
+                    e.target.value
+                  )
                 }
                 placeholder="Level Title"
                 className="w-full mb-1 p-2 border rounded"
@@ -295,7 +319,12 @@ export default function ScatTestAdminPage() {
               <textarea
                 value={item.details}
                 onChange={(e) =>
-                  handleObjectArrayChange("scoringLevels", idx, "details", e.target.value)
+                  handleObjectArrayChange(
+                    "scoringLevels",
+                    idx,
+                    "details",
+                    e.target.value
+                  )
                 }
                 placeholder="Details"
                 rows={2}
@@ -310,7 +339,9 @@ export default function ScatTestAdminPage() {
             </div>
           ))}
           <button
-            onClick={() => addObjectArrayItem("scoringLevels", { title: "", details: "" })}
+            onClick={() =>
+              addObjectArrayItem("scoringLevels", { title: "", details: "" })
+            }
             className="text-blue-600 text-sm"
           >
             + Add Level
@@ -333,7 +364,9 @@ export default function ScatTestAdminPage() {
               <input
                 type="text"
                 value={item}
-                onChange={(e) => handleArrayChange("tipsList", idx, e.target.value)}
+                onChange={(e) =>
+                  handleArrayChange("tipsList", idx, e.target.value)
+                }
                 className="flex-1 p-2 border rounded"
                 placeholder="Tip"
               />
@@ -345,7 +378,10 @@ export default function ScatTestAdminPage() {
               </button>
             </div>
           ))}
-          <button onClick={() => addArrayItem("tipsList", "")} className="text-blue-600 text-sm">
+          <button
+            onClick={() => addArrayItem("tipsList", "")}
+            className="text-blue-600 text-sm"
+          >
             + Add Tip
           </button>
         </div>
@@ -369,14 +405,30 @@ export default function ScatTestAdminPage() {
             placeholder="Register Sub Heading"
             className="w-full mb-2 p-2 border rounded"
           />
-          <input
+          {/* <input
             type="text"
             name="registerContactList"
             value={form.registerContactList}
             onChange={handleChange}
             placeholder="Register Contact List"
             className="w-full mb-2 p-2 border rounded"
-          />
+          /> */}
+          <ReactQuill
+  theme="snow"
+  value={form.registerContactList}
+  onChange={(value) => setForm({ ...form, registerContactList: value })}
+  placeholder="Register Contact List"
+  className="w-full bg-white rounded mb-2"
+  modules={{
+    toolbar: [
+      ["bold", "italic", "underline"], // basic formatting
+      [{ color: [] }],                 // text color
+      ["link"],                        // links
+      [{ list: "ordered" }, { list: "bullet" }], // lists
+      ["clean"],                       // remove formatting
+    ],
+  }}
+/>
           <input
             type="text"
             name="authHeading"
@@ -385,13 +437,32 @@ export default function ScatTestAdminPage() {
             placeholder="Auth Heading"
             className="w-full mb-2 p-2 border rounded"
           />
-          <textarea
+          {/* <textarea
             name="authDescription"
             value={form.authDescription}
             onChange={handleChange}
             placeholder="Auth Description"
             rows={2}
             className="w-full p-2 border rounded"
+          /> */}
+          <ReactQuill
+            theme="snow"
+            value={form.authDescription}
+            onChange={(value) => {
+              setForm({ ...form, authDescription: value });
+            }}
+            placeholder="Auth Description"
+            className="w-full bg-white rounded"
+            modules={{
+              toolbar: [
+                [{ header: [1, 2, false] }],
+                ["bold", "italic", "underline"],
+                [{ color: [] }],
+                ["link"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                ["clean"],
+              ],
+            }}
           />
         </div>
 
