@@ -1141,7 +1141,7 @@ export default function SSATAdminPanel() {
         </div>
 
         {/* 8. Structure Tables */}
-        <div className="bg-gray-50 p-4 rounded border">
+        {/* <div className="bg-gray-50 p-4 rounded border">
             <h3 className="font-bold mb-2">8. Test Structure</h3>
             <input name="structureHeading" value={form.structureHeading} onChange={handleChange} placeholder="Structure Heading" className="w-full mb-4 p-2 border rounded" />
             <div className="grid grid-cols-2 gap-4">
@@ -1170,8 +1170,130 @@ export default function SSATAdminPanel() {
                     <button onClick={()=>addItem('upperTable', {section: "", time: "", questions: ""})} className="text-blue-600 text-xs font-bold">+ Add Row</button>
                 </div>
             </div>
-        </div>
+        </div> */}
+{/* 8. Structure Tables */}
+        <div className="bg-gray-50 p-4 rounded border">
+            <h3 className="font-bold mb-2">8. Test Structure</h3>
+            <input 
+                name="structureHeading" 
+                value={form.structureHeading} 
+                onChange={handleChange} 
+                placeholder="Structure Heading" 
+                className="w-full mb-4 p-2 border rounded" 
+            />
+            
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                {/* MIDDLE LEVEL TABLE */}
+                <div>
+                    <h4 className="font-bold text-sm mb-1 text-blue-600">Middle Level</h4>
+                    {/* Headers for clarity */}
+                    <div className="flex gap-1 mb-1 text-xs font-bold text-gray-500">
+                        <span className="w-1/3">Section</span>
+                        <span className="w-16">Time</span>
+                        <span className="w-12">Q's</span>
+                        <span className="flex-1">Download Link</span>
+                        <span className="w-4"></span>
+                    </div>
 
+                    {form.middleTable.map((row, i) => (
+                        <div key={i} className="flex gap-1 mb-1">
+                            {/* Section Name */}
+                            <input 
+                                value={row.section} 
+                                onChange={(e)=>handleArrayChange(i, 'section', e.target.value, 'middleTable')} 
+                                placeholder="Section" 
+                                className="w-1/3 p-1 border rounded text-xs" 
+                            />
+                            {/* Time */}
+                            <input 
+                                value={row.time} 
+                                onChange={(e)=>handleArrayChange(i, 'time', e.target.value, 'middleTable')} 
+                                placeholder="Time" 
+                                className="w-16 p-1 border rounded text-xs" 
+                            />
+                            {/* Questions */}
+                            <input 
+                                value={row.questions} 
+                                onChange={(e)=>handleArrayChange(i, 'questions', e.target.value, 'middleTable')} 
+                                placeholder="Q" 
+                                className="w-12 p-1 border rounded text-xs" 
+                            />
+                            {/* NEW DOWNLOAD FIELD */}
+                            <input 
+                                value={row.download || ""} 
+                                onChange={(e)=>handleArrayChange(i, 'download', e.target.value, 'middleTable')} 
+                                placeholder="Download URL/Text" 
+                                className="flex-1 p-1 border rounded text-xs" 
+                            />
+                            
+                            <button onClick={()=>removeItem(i, 'middleTable')} className="text-red-500 text-xs font-bold w-4">x</button>
+                        </div>
+                    ))}
+                    {/* Updated Add Item to include download field */}
+                    <button 
+                        onClick={()=>addItem('middleTable', {section: "", time: "", questions: "", download: ""})} 
+                        className="text-blue-600 text-xs font-bold mt-2"
+                    >
+                        + Add Row
+                    </button>
+                </div>
+
+                {/* UPPER LEVEL TABLE */}
+                <div>
+                    <h4 className="font-bold text-sm mb-1 text-green-600">Upper Level</h4>
+                    {/* Headers for clarity */}
+                    <div className="flex gap-1 mb-1 text-xs font-bold text-gray-500">
+                        <span className="w-1/3">Section</span>
+                        <span className="w-16">Time</span>
+                        <span className="w-12">Q's</span>
+                        <span className="flex-1">Download Link</span>
+                        <span className="w-4"></span>
+                    </div>
+
+                    {form.upperTable.map((row, i) => (
+                        <div key={i} className="flex gap-1 mb-1">
+                            {/* Section Name */}
+                            <input 
+                                value={row.section} 
+                                onChange={(e)=>handleArrayChange(i, 'section', e.target.value, 'upperTable')} 
+                                placeholder="Section" 
+                                className="w-1/3 p-1 border rounded text-xs" 
+                            />
+                            {/* Time */}
+                            <input 
+                                value={row.time} 
+                                onChange={(e)=>handleArrayChange(i, 'time', e.target.value, 'upperTable')} 
+                                placeholder="Time" 
+                                className="w-16 p-1 border rounded text-xs" 
+                            />
+                            {/* Questions */}
+                            <input 
+                                value={row.questions} 
+                                onChange={(e)=>handleArrayChange(i, 'questions', e.target.value, 'upperTable')} 
+                                placeholder="Q" 
+                                className="w-12 p-1 border rounded text-xs" 
+                            />
+                            {/* NEW DOWNLOAD FIELD */}
+                            <input 
+                                value={row.download || ""} 
+                                onChange={(e)=>handleArrayChange(i, 'download', e.target.value, 'upperTable')} 
+                                placeholder="Download URL/Text" 
+                                className="flex-1 p-1 border rounded text-xs" 
+                            />
+
+                            <button onClick={()=>removeItem(i, 'upperTable')} className="text-red-500 text-xs font-bold w-4">x</button>
+                        </div>
+                    ))}
+                    {/* Updated Add Item to include download field */}
+                    <button 
+                        onClick={()=>addItem('upperTable', {section: "", time: "", questions: "", download: ""})} 
+                        className="text-blue-600 text-xs font-bold mt-2"
+                    >
+                        + Add Row
+                    </button>
+                </div>
+            </div>
+        </div>
         {/* 9. Good Score */}
         <div className="bg-red-50 p-6 rounded-lg border border-red-200">
             <h3 className="font-bold text-lg mb-4 text-red-800">9. Good Score & Footer</h3>
