@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function FaqTab() {
   const [form, setForm] = useState({
@@ -180,7 +182,7 @@ export default function FaqTab() {
                 <tr key={item._id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 border-b">{index + 1}</td>
                   <td className="px-4 py-3 border-b">{item.title}</td>
-                  <td className="px-4 py-3 border-b">{item.description}</td>
+                  <td className="px-4 py-3 border-b" dangerouslySetInnerHTML={{__html:item.description}}></td>
                   <td className="px-4 py-3 border-b">
                     {Array.isArray(item?.points) && item.points.length > 0 ? (
                       <ul className="list-disc ml-5">
@@ -238,12 +240,30 @@ export default function FaqTab() {
               className="w-full mb-3 p-3 border rounded-xl"
             />
 
-            <textarea
+            {/* <textarea
               name="description"
               value={form.description}
               onChange={handleChange}
               placeholder="Enter description"
               className="w-full mb-3 p-3 border rounded-xl"
+            /> */}
+            <ReactQuill
+              theme="snow"
+              value={form.description}
+              onChange={(value) =>
+                setForm((prev) => ({ ...prev, description: value }))
+              }
+              modules={{
+                toolbar: [
+                   [{ color: [] }, { background: [] }],
+                  ["bold", "italic", "underline"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["link"],
+                  ["clean"],
+                ],
+              }}
+              placeholder="Enter description"
+              className="mb-3 bg-white rounded-xl"
             />
 
             <label className="font-semibold mb-1 block">Points:</label>

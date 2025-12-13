@@ -11,8 +11,9 @@ export default function BlogTab() {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    type: "image",  // 🟢 NEW
+    type: "image", // 🟢 NEW
   });
+  const [selectedDescription, setSelectedDescription] = useState(null);
 
   const [file, setFile] = useState(null); // image or video both
   const [preview, setPreview] = useState("");
@@ -182,6 +183,20 @@ export default function BlogTab() {
     fetchList();
   }, []);
 
+  const getShortTextFromHTML = (html = "", limit = 50) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+
+    const text = div.textContent || div.innerText || "";
+    return text.length > limit ? text.slice(0, limit) + "..." : text;
+  };
+
+  const getTextLength = (html = "") => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent?.length || 0;
+  };
+
   return (
     <div className="p-8 bg-gray-50">
       <div className="flex justify-between items-center mb-6">
@@ -213,29 +228,42 @@ export default function BlogTab() {
               {list?.map((item, index) => (
                 <tr key={item._id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 border-b">{index + 1}</td>
-                 <td className="px-4 py-3 border-b">
-  {item.type === "image" && item.image ? (
-    <img
-      src={`${import.meta.env.VITE_APP_URL}${item.image}`}
-      alt={item.title}
-      className="w-20 h-20 rounded-lg object-cover border"
-    />
-  ) : item.type === "video" && item.video ? (
-    <video
-      src={`${import.meta.env.VITE_APP_URL}${item.video}`}
-      className="w-20 h-20 rounded-lg border"
-      controls
-    />
-  ) : (
-    <span>No Media</span>
-  )}
-</td>
+                  <td className="px-4 py-3 border-b">
+                    {item.type === "image" && item.image ? (
+                      <img
+                        src={`${import.meta.env.VITE_APP_URL}${item.image}`}
+                        alt={item.title}
+                        className="w-20 h-20 rounded-lg object-cover border"
+                      />
+                    ) : item.type === "video" && item.video ? (
+                      <video
+                        src={`${import.meta.env.VITE_APP_URL}${item.video}`}
+                        className="w-20 h-20 rounded-lg border"
+                        controls
+                      />
+                    ) : (
+                      <span>No Media</span>
+                    )}
+                  </td>
 
                   <td className="px-4 py-3 border-b font-semibold text-gray-800">
                     {item.title}
                   </td>
-                  <td className="px-4 py-3 border-b text-gray-600 truncate max-w-xs " dangerouslySetInnerHTML={{__html:item.description}}>
+                  {/* <td className="px-4 py-3 border-b text-gray-600 truncate max-w-xs " dangerouslySetInnerHTML={{__html:item.description}}>
+                  </td> */}
+                  <td className="px-4 py-3 border-b text-gray-600 max-w-xs">
+                    {getShortTextFromHTML(item.description, 50)}
+
+                    {getTextLength(item.description) > 50 && (
+                      <button
+                        onClick={() => setSelectedDescription(item.description)}
+                        className="ml-2 text-blue-600 text-sm font-medium hover:underline"
+                      >
+                        View more
+                      </button>
+                    )}
                   </td>
+
                   <td className="px-4 py-3 border-b text-center">
                     <button
                       onClick={() => openEdit(item)}
@@ -258,10 +286,15 @@ export default function BlogTab() {
       )}
 
       {/* Modal */}
-     {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 " onClick={() => setShowModal(false)}>
-          <div className="bg-white p-6 rounded-xl w-full max-w-xl relative"  onClick={(e)=>e.stopPropagation()}>
-
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 "
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-white p-6 rounded-xl w-full max-w-xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="absolute right-3 top-2"
               onClick={() => setShowModal(false)}
@@ -328,23 +361,23 @@ export default function BlogTab() {
               className="w-full p-2 border rounded-lg mb-3 h-32"
             /> */}
             <ReactQuill
-  theme="snow"
-  value={form.description}
-  onChange={(value) =>
-    setForm((prev) => ({ ...prev, description: value }))
-  }
-  modules={ {
-  toolbar: [
-    [{ header: [1, 2, false] }],
-    ["bold", "italic", "underline"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["link"],
-    ["clean"],
-  ],
-}}
-  placeholder="Description"
-  className="mb-3 bg-white rounded-lg"
-/>
+              theme="snow"
+              value={form.description}
+              onChange={(value) =>
+                setForm((prev) => ({ ...prev, description: value }))
+              }
+              modules={{
+                toolbar: [
+                  [{ header: [1, 2, false] }],
+                  ["bold", "italic", "underline"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["link"],
+                  ["clean"],
+                ],
+              }}
+              placeholder="Description"
+              className="mb-3 bg-white rounded-lg"
+            />
 
             <button
               onClick={handleSubmit}
@@ -355,7 +388,6 @@ export default function BlogTab() {
           </div>
         </div>
       )}
-
 
       {/* Delete Confirmation */}
       {confirmModal && (
@@ -378,6 +410,25 @@ export default function BlogTab() {
                 Cancel
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {selectedDescription && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto relative">
+            <button
+              onClick={() => setSelectedDescription(null)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+            >
+              ✖
+            </button>
+
+            <h3 className="text-lg font-semibold mb-4">Description</h3>
+
+            <div
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: selectedDescription }}
+            />
           </div>
         </div>
       )}
