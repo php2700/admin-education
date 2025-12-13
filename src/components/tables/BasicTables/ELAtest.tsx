@@ -291,11 +291,11 @@ export default function ElaTestAdminPage() {
       const res = await axios.get(
         `${import.meta.env.VITE_APP_URL}api/admin/ela-test`,
         {
-          headers: { 
+          headers: {
             Authorization: `Bearer ${token}`,
-            'Cache-Control': 'no-cache',
-            Pragma: 'no-cache',
-            Expires: '0',
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+            Expires: "0",
           },
         }
       );
@@ -445,9 +445,12 @@ export default function ElaTestAdminPage() {
           <ReactQuill
             theme="snow"
             value={form.introDescription}
-            onChange={(value) => setForm({ ...form, introDescription: value })}
-            placeholder="Intro Description"
-            className="w-full bg-white rounded"
+            onChange={(value) =>
+              setForm((prev) => ({
+                ...prev,
+                introDescription: value,
+              }))
+            }
             modules={{
               toolbar: [
                 [{ header: [1, 2, 3, false] }],
@@ -457,6 +460,8 @@ export default function ElaTestAdminPage() {
                 ["clean"],
               ],
             }}
+            placeholder="Intro Description"
+            className="bg-white rounded"
           />
         </div>
 
