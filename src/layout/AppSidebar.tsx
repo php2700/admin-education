@@ -227,12 +227,12 @@ const navItems: NavItem[] = [
         path: "/SBACtestDetails",   
       },
        {
-        name: "ACUPLACER",
+        name: "ACCUPLACER",
         path: "/AccuplacerDetails",   
       }
       ,
        {
-        name: "STBT",
+        name: "STB",
         path: "/STBTtestDetails",   
       }
       
