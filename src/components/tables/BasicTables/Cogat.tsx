@@ -529,6 +529,7 @@ export default function CogatTestPrepAdmin() {
   const initialState = {
     heroTitle: "",
     heroDescription: "",
+     heroSubDescription: "",
     heroList: [""], // Array of strings
 
     introHeading: "",
@@ -650,7 +651,7 @@ export default function CogatTestPrepAdmin() {
         <h2 className="text-3xl font-bold text-center text-blue-800">CogAT Admin Panel</h2>
 
         {/* --- 1. HERO --- */}
-        <div className="bg-gray-50 p-4 rounded border">
+        {/* <div className="bg-gray-50 p-4 rounded border">
           <h3 className="font-bold text-lg mb-2 text-gray-700">1. Hero Section</h3>
           <input name="heroTitle" value={form.heroTitle} onChange={handleChange} placeholder="Hero Title" className="w-full mb-2 p-2 border rounded" />
           <textarea name="heroDescription" value={form.heroDescription} onChange={handleChange} placeholder="Introduction Paragraph..." rows={3} className="w-full p-2 border rounded mb-2" />
@@ -663,6 +664,55 @@ export default function CogatTestPrepAdmin() {
             </div>
           ))}
           <button onClick={() => addStringItem('heroList')} className="text-blue-600 text-sm font-semibold mt-1">+ Add Bullet</button>
+        </div> */}
+        <div className="bg-gray-50 p-4 rounded border">
+          <h3 className="font-bold text-lg mb-2 text-gray-700">1. Hero Section</h3>
+          
+          {/* Main Title */}
+          <label className="text-xs font-bold text-gray-500">Main Title</label>
+          <input 
+            name="heroTitle" 
+            value={form.heroTitle} 
+            onChange={handleChange} 
+            placeholder="Hero Title" 
+            className="w-full mb-3 p-2 border rounded" 
+          />
+
+          {/* Main Description (First Paragraph) */}
+          <label className="text-xs font-bold text-gray-500">Main Description</label>
+          <textarea 
+            name="heroDescription" 
+            value={form.heroDescription} 
+            onChange={handleChange} 
+            placeholder="Introduction Paragraph (e.g. At GGES, COGAT Test prep is something...)" 
+            rows={3} 
+            className="w-full p-2 border rounded mb-3" 
+          />
+
+          {/* NEW FIELD: Sub Description (List Intro) */}
+          <label className="text-xs font-bold text-gray-500">Sub Description (List Intro)</label>
+          <input 
+            name="heroSubDescription" 
+            value={form.heroSubDescription} 
+            onChange={handleChange} 
+            placeholder="e.g. GGES makes the best tutoring options for a number of reasons:" 
+            className="w-full p-2 border rounded mb-3 border-blue-300 bg-blue-50" 
+          />
+          
+          {/* Bullet Points */}
+          <label className="text-sm font-semibold block mb-1">Bullet Points (Why Choose GGES?):</label>
+          {form.heroList.map((item, i) => (
+            <div key={i} className="flex gap-2 mt-1">
+              <input 
+                value={item} 
+                onChange={(e) => handleStringArrayChange(i, e.target.value, 'heroList')} 
+                className="flex-1 p-2 border rounded" 
+                placeholder="Bullet point..." 
+              />
+              <button onClick={() => removeStringItem(i, 'heroList')} className="text-red-500 font-bold px-2">✕</button>
+            </div>
+          ))}
+          <button onClick={() => addStringItem('heroList')} className="text-blue-600 text-sm font-semibold mt-2">+ Add Bullet</button>
         </div>
 
         {/* --- 2. INTRO & STRUCTURE TABLE --- */}
