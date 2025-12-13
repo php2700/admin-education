@@ -4,6 +4,8 @@ import axios from "axios";
 import { FiUploadCloud } from "react-icons/fi";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function BlogTab() {
   const [form, setForm] = useState({
@@ -232,8 +234,7 @@ export default function BlogTab() {
                   <td className="px-4 py-3 border-b font-semibold text-gray-800">
                     {item.title}
                   </td>
-                  <td className="px-4 py-3 border-b text-gray-600 truncate max-w-xs">
-                    {item.description}
+                  <td className="px-4 py-3 border-b text-gray-600 truncate max-w-xs " dangerouslySetInnerHTML={{__html:item.description}}>
                   </td>
                   <td className="px-4 py-3 border-b text-center">
                     <button
@@ -259,7 +260,7 @@ export default function BlogTab() {
       {/* Modal */}
      {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 " onClick={() => setShowModal(false)}>
-          <div className="bg-white p-6 rounded-xl w-full max-w-lg relative"  onClick={(e)=>e.stopPropagation()}>
+          <div className="bg-white p-6 rounded-xl w-full max-w-xl relative"  onClick={(e)=>e.stopPropagation()}>
 
             <button
               className="absolute right-3 top-2"
@@ -319,13 +320,31 @@ export default function BlogTab() {
               className="w-full p-2 border rounded-lg mb-3"
             />
 
-            <textarea
+            {/* <textarea
               name="description"
               value={form.description}
               onChange={handleChange}
               placeholder="Description"
               className="w-full p-2 border rounded-lg mb-3 h-32"
-            />
+            /> */}
+            <ReactQuill
+  theme="snow"
+  value={form.description}
+  onChange={(value) =>
+    setForm((prev) => ({ ...prev, description: value }))
+  }
+  modules={ {
+  toolbar: [
+    [{ header: [1, 2, false] }],
+    ["bold", "italic", "underline"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link"],
+    ["clean"],
+  ],
+}}
+  placeholder="Description"
+  className="mb-3 bg-white rounded-lg"
+/>
 
             <button
               onClick={handleSubmit}

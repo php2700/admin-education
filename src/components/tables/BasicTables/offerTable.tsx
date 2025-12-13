@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function OfferTable() {
   const [form, setForm] = useState({
@@ -202,11 +204,10 @@ export default function OfferTable() {
                       {item.type}
                     </td>
                     <td className="px-4 py-3 border-b">{item.title}</td>
-                    <td className="px-4 py-3 border-b">
-                      {item.description.length > 80
-                        ? item.description.slice(0, 80) + "..."
-                        : item.description}
-                    </td>
+                    <td
+                      className="px-4 py-3 border-b"
+                      dangerouslySetInnerHTML={{ __html: item?.description }}
+                    ></td>
                     <td className="px-4 py-3 border-b">
                       {new Date(item.expireDate).toLocaleDateString()}
                     </td>
@@ -234,8 +235,8 @@ export default function OfferTable() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md relative shadow-xl">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-200000 overflow-y-auto">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-4xl relative shadow-xl">
             <button
               className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
               onClick={() => setShowModal(false)}
@@ -283,14 +284,33 @@ export default function OfferTable() {
             />
 
             {/* Description Input */}
-            <textarea
+            {/* <textarea
               name="description"
               value={form.description}
               onChange={handleChange}
               placeholder="Enter description..."
               className="w-full mb-3 p-3 border border-gray-300 rounded-xl"
               rows={4}
-            ></textarea>
+            ></textarea> */}
+
+            <ReactQuill
+              theme="snow"
+              value={form.description}
+              onChange={(value) =>
+                setForm((prev) => ({ ...prev, description: value }))
+              }
+              modules={{
+                toolbar: [
+                  [{ header: [1, 2, false] }],
+                  ["bold", "italic", "underline"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["link"],
+                  ["clean"],
+                ],
+              }}
+              placeholder="Enter description..."
+              className="mb-3 rounded-xl"
+            />
 
             {/* Expire Date */}
             <input
