@@ -23,7 +23,7 @@ export default function OfferTable() {
   const [modalError, setModalError] = useState("");
   const [modalMessage, setModalMessage] = useState("");
 
-  const typeOptions = ["new", "hot deal", "referral"];
+  const typeOptions = ["New", "Hot Deal", "Referral"];
 
   // Handle form input change
   const handleChange = (e) => {
