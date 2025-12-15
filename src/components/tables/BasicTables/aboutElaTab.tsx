@@ -9,7 +9,7 @@ export default function AboutElaTab() {
     description: "",
     heading: "",
     whoTake: "",
-    questionType: [""],
+     questionType: [{ title: "", description: "" }],
   });
 
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,10 @@ export default function AboutElaTab() {
           description: data.description || "",
           heading: data.heading || "",
           whoTake: data.whoTake || "",
-          questionType: data.questionType?.length ? data.questionType : [""],
+            questionType:
+    data.questionType?.length
+      ? data.questionType
+      : [{ title: "", description: "" }],
         });
       }
     } catch (err) {
@@ -57,15 +60,26 @@ export default function AboutElaTab() {
     setForm({ ...form, questionType: newArray });
   };
 
-  const addQuestionType = () => {
-    setForm({ ...form, questionType: [...form.questionType, ""] });
-  };
+ const addQuestionType = () => {
+  setForm({
+    ...form,
+    questionType: [...form.questionType, { title: "", description: "" }],
+  });
+};
 
-  const removeQuestionType = (index) => {
-    const newArray = [...form.questionType];
-    newArray.splice(index, 1);
-    setForm({ ...form, questionType: newArray });
-  };
+const handleQuestionTypeChange = (e, index, field) => {
+  const newArray = [...form.questionType];
+  newArray[index][field] = e.target.value;
+  setForm({ ...form, questionType: newArray });
+};
+
+
+ const removeQuestionType = (index) => {
+  const newArray = [...form.questionType];
+  newArray.splice(index, 1);
+  setForm({ ...form, questionType: newArray });
+};
+
 
   // Save (Upsert)
   const handleSave = async () => {
@@ -74,7 +88,7 @@ export default function AboutElaTab() {
       !form.description ||
       !form.heading ||
       !form.whoTake ||
-      !form.questionType.length
+        !form.questionType.every(q => q.title && q.description)
     )
       return toast.error("All fields are required");
 
@@ -152,31 +166,51 @@ export default function AboutElaTab() {
 
         {/* Question Type (Array Field) */}
         <label className="block mb-2 font-medium">Question Types</label>
-        {form.questionType.map((q, index) => (
-          <div key={index} className="flex gap-2 mb-3">
-            <input
-              type="text"
-              value={q}
-              onChange={(e) => handleArrayChange(e, index)}
-              placeholder={`Question Type ${index + 1}`}
-              className="flex-1 p-3 border border-gray-300 rounded-xl"
-            />
-            {index > 0 && (
-              <button
-                onClick={() => removeQuestionType(index)}
-                className="text-red-500"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-        ))}
+      {form.questionType.map((q, index) => (
+  <div key={index} className="border p-4 rounded-xl mb-4 bg-gray-50">
+    
+    <div className="flex justify-between items-center mb-3">
+      <p className="font-medium">
+        Question {index + 1}
+      </p>
+      {index > 0 && (
         <button
-          onClick={addQuestionType}
-          className="text-blue-600 text-sm mb-4"
+          onClick={() => removeQuestionType(index)}
+          className="text-red-500 text-sm"
         >
-          + Add Question Type
+          Remove
         </button>
+      )}
+    </div>
+
+    <input
+      type="text"
+      value={q.title}
+      onChange={(e) =>
+        handleQuestionTypeChange(e, index, "title")
+      }
+      placeholder="Question title"
+      className="w-full p-3 border border-gray-300 rounded-xl mb-3"
+    />
+
+    <textarea
+      rows={2}
+      value={q.description}
+      onChange={(e) =>
+        handleQuestionTypeChange(e, index, "description")
+      }
+      placeholder="Question description"
+      className="w-full p-3 border border-gray-300 rounded-xl"
+    />
+  </div>
+))}
+
+<button
+  onClick={addQuestionType}
+  className="text-blue-600 text-sm mb-4"
+>
+  + Add Question Type
+</button>
 
         {/* Save Button */}
         <button

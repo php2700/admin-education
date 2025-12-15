@@ -9,9 +9,7 @@ export default function CompetitionTable() {
     description: "",
     condition: [""],
     whyTake: [""],
-    competition: [
-      { amc: "", description: "", for: "", when: "" }
-    ],
+    competition: [{ title: "", amc: "", description: "", for: "", when: "" }],
   });
 
   const [loading, setLoading] = useState(false);
@@ -41,6 +39,7 @@ export default function CompetitionTable() {
           competition:
             Array.isArray(data.competition) && data.competition.length
               ? data.competition.map((c) => ({
+                  title: c.title || "",
                   amc: c.amc || "",
                   description: c.description || "",
                   for: c.for || "",
@@ -93,7 +92,7 @@ export default function CompetitionTable() {
       ...form,
       competition: [
         ...form.competition,
-        { amc: "", description: "", for: "", when: "" },
+        { title: "", amc: "", description: "", for: "", when: "" },
       ],
     });
   };
@@ -115,7 +114,13 @@ export default function CompetitionTable() {
       return toast.error("Why Take fields cannot be empty");
 
     for (const comp of form.competition) {
-      if (!comp.amc || !comp.description || !comp.for || !comp.when) {
+      if (
+        !comp.amc ||
+        !comp.description ||
+        !comp.for ||
+        !comp.when ||
+        !comp.title
+      ) {
         return toast.error("All competition fields are required");
       }
     }
@@ -237,6 +242,15 @@ export default function CompetitionTable() {
             key={index}
             className="border border-gray-200 rounded-xl p-4 mb-3 bg-gray-50"
           >
+            <input
+              type="text"
+              value={c.title}
+              onChange={(e) =>
+                handleCompetitionChange(index, "title", e.target.value)
+              }
+              placeholder="AMC Title"
+              className="w-full p-3 border border-gray-300 rounded-xl mb-2"
+            />
             <input
               type="text"
               value={c.amc}

@@ -114,27 +114,27 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     subItems: [
       {
-        name: "Math Test Prep",
+        name: "Common Core Math",
         path: "/math-test-prep",
       },
       {
-        name: "Tutoring",
+        name: "Math Algebra",
         path: "/tutoring",
       },
       {
-        name: "Chapter",
+        name: "Geometry",
         path: "/chapter",
       },
       {
-        name: "Competition",
+        name: "Math Amc",
         path: "/competition",
       },
       {
-        name: "Kangaroo",
+        name: "Math Kangaroo",
         path: "/Kangaroo",
       },
       {
-        name: "Science",
+        name: "K-12 Common Core Science",
         path: "/science",
       },
     ],

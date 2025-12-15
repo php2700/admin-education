@@ -252,7 +252,7 @@ export const KargarooDetail = () => {
             <label className="font-medium">Descriptions</label>
             {form.description.map((d, i) => (
               <div key={i} className="flex gap-2 mb-2">
-                <input
+                <textarea
                   value={d}
                   onChange={(e) => handleDescriptionChange(i, e.target.value)}
                   className="border flex-1 p-2 rounded"
