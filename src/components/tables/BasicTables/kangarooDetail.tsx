@@ -11,6 +11,7 @@ export const KargarooDetail = () => {
   const [loading, setLoading] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [selectedMessage, setSelectedMessage] = useState(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -199,9 +200,17 @@ export const KargarooDetail = () => {
               {/* Description */}
               <div className="col-span-5 text-sm">
                 <ul className="list-disc ml-4">
-                  {item.description.map((d, i) => (
+                  {/* {item.description.map((d, i) => (
                     <li key={i}>{d}</li>
-                  ))}
+                  ))} */}
+                  {item.description?.length && (
+    <button
+      onClick={() => setSelectedMessage(item.description)}
+      className="ml-2 text-blue-600 font-medium hover:underline"
+    >
+      View
+    </button>
+  )}
                 </ul>
               </div>
 
@@ -325,6 +334,27 @@ export const KargarooDetail = () => {
           </div>
         </div>
       )}
+
+          {selectedMessage && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl p-6 max-w-3xl w-full shadow-lg relative">
+      <button
+        onClick={() => setSelectedMessage(null)}
+        className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+      >
+        ✖
+      </button>
+
+      <h3 className="text-lg font-semibold mb-3">Description</h3>
+ <ul className="text-gray-700 whitespace-pre-wrap list-decimal pl-5">
+  {selectedMessage?.map((item, index) => (
+    <li key={index}>{item}</li>
+  ))}
+</ul>
+
+    </div>
+  </div>
+)}
     </div>
   );
 };

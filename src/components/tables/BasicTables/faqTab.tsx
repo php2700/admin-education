@@ -12,7 +12,9 @@ export default function FaqTab() {
     description: "",
     points: [""],
   });
-
+ const [selectedDescription, setSelectedDescription] = useState(null);
+   const [selectedMessage, setSelectedMessage] = useState(null);
+ 
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -149,6 +151,20 @@ export default function FaqTab() {
     fetchList();
   }, []);
 
+   const getShortTextFromHTML = (html = "", limit = 50) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+
+    const text = div.textContent || div.innerText || "";
+    return text.length > limit ? text.slice(0, limit) + "..." : text;
+  };
+
+  const getTextLength = (html = "") => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent?.length || 0;
+  };
+
   return (
     <div className="p-8 bg-gray-50">
       <div className="flex justify-between items-center mb-6">
@@ -182,13 +198,32 @@ export default function FaqTab() {
                 <tr key={item._id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 border-b">{index + 1}</td>
                   <td className="px-4 py-3 border-b">{item.title}</td>
-                  <td className="px-4 py-3 border-b" dangerouslySetInnerHTML={{__html:item.description}}></td>
+                  <td className="px-4 py-3 border-b" >
+                        {getShortTextFromHTML(item.description, 50)}
+
+                    {getTextLength(item.description) > 50 && (
+                      <button
+                        onClick={() => setSelectedDescription(item.description)}
+                        className="ml-2 text-blue-600 text-sm font-medium hover:underline"
+                      >
+                        View more
+                      </button>
+                    )}
+                  </td>
                   <td className="px-4 py-3 border-b">
                     {Array.isArray(item?.points) && item.points.length > 0 ? (
-                      <ul className="list-disc ml-5">
-                        {item.points.map((p, i) => (
+                      <ul className="list-disc">
+                        {/* {item.points.map((p, i) => (
                           <li key={i}>{p}</li>
-                        ))}
+                        ))} */}
+                         {item.points?.length && (
+    <button
+      onClick={() => setSelectedMessage(item.points)}
+      className=" text-blue-600 font-medium hover:underline"
+    >
+      View
+    </button>
+  )}
                       </ul>
                     ) : (
                       "Null"
@@ -325,6 +360,47 @@ export default function FaqTab() {
           </div>
         </div>
       )}
+
+         {selectedDescription && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto relative">
+            <button
+              onClick={() => setSelectedDescription(null)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+            >
+              ✖
+            </button>
+
+            <h3 className="text-lg font-semibold mb-4">Description</h3>
+
+            <div
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: selectedDescription }}
+            />
+          </div>
+        </div>
+      )}
+        {selectedMessage && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl p-6 max-w-3xl w-full shadow-lg relative">
+      <button
+        onClick={() => setSelectedMessage(null)}
+        className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+      >
+        ✖
+      </button>
+
+      <h3 className="text-lg font-semibold mb-3">Points</h3>
+   <ul className="text-gray-700 whitespace-pre-wrap list-disc pl-5">
+  {selectedMessage?.map((ele, index) => (
+    <li key={index}>{ele}</li>
+  ))}
+</ul>
+
+
+    </div>
+  </div>
+)}
     </div>
   );
 }

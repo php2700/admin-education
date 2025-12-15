@@ -288,11 +288,11 @@ export default function BlogTab() {
       {/* Modal */}
       {showModal && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 "
+          className="fixed inset-0 bg-black/50 flex items-center overflow-y-auto justify-center z-100000 "
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white p-6 rounded-xl w-full max-w-xl relative"
+            className="bg-white p-6 rounded-xl w-full max-w-3xl relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button

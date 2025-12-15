@@ -13,6 +13,8 @@ export default function OfferTable() {
     description: "",
     expireDate: "",
   });
+    const [selectedDescription, setSelectedDescription] = useState(null);
+  
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -147,6 +149,21 @@ export default function OfferTable() {
     fetchList();
   }, []);
 
+
+  const getShortTextFromHTML = (html = "", limit = 50) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+
+    const text = div.textContent || div.innerText || "";
+    return text.length > limit ? text.slice(0, limit) + "..." : text;
+  };
+
+  const getTextLength = (html = "") => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent?.length || 0;
+  };
+
   return (
     <div className="bg-gray-50 p-8">
       <div className="">
@@ -206,8 +223,19 @@ export default function OfferTable() {
                     <td className="px-4 py-3 border-b">{item.title}</td>
                     <td
                       className="px-4 py-3 border-b"
-                      dangerouslySetInnerHTML={{ __html: item?.description }}
-                    ></td>
+                      // dangerouslySetInnerHTML={{ __html: item?.description }}
+                    >
+                       {getShortTextFromHTML(item.description, 50)}
+
+                    {getTextLength(item.description) > 50 && (
+                      <button
+                        onClick={() => setSelectedDescription(item.description)}
+                        className="ml-2 text-blue-600 text-sm font-medium hover:underline"
+                      >
+                        View more
+                      </button>
+                    )}
+                    </td>
                     <td className="px-4 py-3 border-b">
                       {new Date(item.expireDate).toLocaleDateString()}
                     </td>
@@ -354,6 +382,25 @@ export default function OfferTable() {
                 Cancel
               </button>
             </div>
+          </div>
+        </div>
+      )}
+         {selectedDescription && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto relative">
+            <button
+              onClick={() => setSelectedDescription(null)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+            >
+              ✖
+            </button>
+
+            <h3 className="text-lg font-semibold mb-4">Description</h3>
+
+            <div
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: selectedDescription }}
+            />
           </div>
         </div>
       )}

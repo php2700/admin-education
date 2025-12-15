@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 export const ScienceDetail = () => {
   const token = localStorage.getItem("educationToken");
+  const [selectedMessage, setSelectedMessage] = useState(null);
 
   const [list, setList] = useState([]);
   const [openForm, setOpenForm] = useState(false);
@@ -172,7 +173,20 @@ export const ScienceDetail = () => {
               <div className="col-span-2 font-medium">{item.title}</div>
               <div className="col-span-2 font-medium">{item.heading}</div>
 
-              <div className="col-span-5 text-sm">{item.description}</div>
+              <div className="col-span-5 text-sm">
+                {item.description?.length > 50
+                  ? item.description.slice(0, 50) + "..."
+                  : item.description}
+
+                {item.description.length > 50 && (
+                  <button
+                    onClick={() => setSelectedMessage(item.description)}
+                    className="ml-2 text-blue-600 font-medium hover:underline"
+                  >
+                    View
+                  </button>
+                )}
+              </div>
 
               <div className="col-span-1 flex flex-col gap-2">
                 <button
@@ -282,6 +296,23 @@ export const ScienceDetail = () => {
                 Cancel
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {selectedMessage && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-3xl w-full shadow-lg relative">
+            <button
+              onClick={() => setSelectedMessage(null)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+            >
+              ✖
+            </button>
+
+            <h3 className="text-lg font-semibold mb-3">Message</h3>
+            <p className="text-gray-700 ">
+              {selectedMessage}
+            </p>
           </div>
         </div>
       )}

@@ -5,6 +5,8 @@ import { FaEdit, FaTrashAlt, FaPlus, FaMinus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 export default function planTable() {
+    const [selectedMessage, setSelectedMessage] = useState(null);
+  
   const [form, setForm] = useState({
     name: "",
     amount: "",
@@ -183,11 +185,21 @@ export default function planTable() {
                     {item.duration}
                   </td>
                   <td className="px-4 py-3 border-b">
-                    <ul className="list-disc list-inside text-gray-700">
+                   
+
+  {item.feature?.length && (
+    <button
+      onClick={() => setSelectedMessage(item.feature)}
+      className="ml-2 text-blue-600 font-medium hover:underline"
+    >
+      View
+    </button>
+  )}
+                    {/* <ul className="list-disc list-inside text-gray-700">
                       {item.feature?.map((f, i) => (
                         <li key={i}>{f}</li>
                       ))}
-                    </ul>
+                    </ul> */}
                   </td>
                   <td className="px-4 py-3 border-b text-center">
                     <button
@@ -321,6 +333,28 @@ export default function planTable() {
           </div>
         </div>
       )}
+          {selectedMessage && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl p-6 max-w-3xl w-full shadow-lg relative">
+      <button
+        onClick={() => setSelectedMessage(null)}
+        className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+      >
+        ✖
+      </button>
+
+      <h3 className="text-lg font-semibold mb-3">Features</h3>
+      <p className="text-gray-700 whitespace-pre-wrap">
+      <ul className="text-gray-700 whitespace-pre-wrap list-disc pl-5">
+  {selectedMessage?.map((ele, index) => (
+    <li key={index}>{ele}</li>
+  ))}
+</ul>
+
+      </p>
+    </div>
+  </div>
+)}
     </div>
   );
 }

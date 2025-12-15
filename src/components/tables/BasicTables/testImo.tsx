@@ -11,6 +11,7 @@ export default function TestImonial() {
     description: "",
     address: "",
   });
+  const [selectedMessage, setSelectedMessage] = useState(null);
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
@@ -198,7 +199,21 @@ export default function TestImonial() {
                     />
                   </td>
                   <td className="px-4 py-3 border-b">{item.title}</td>
-                  <td className="px-4 py-3 border-b">{item.description}</td>
+                  <td className="px-4 py-3 border-b">
+                      {item.description?.length > 50
+    ? item.description?.slice(0, 50) + "..."
+    : item.description}
+
+  {item.description?.length > 50 && (
+    <button
+      onClick={() => setSelectedMessage(item.description)}
+      className="ml-2 text-blue-600 font-medium hover:underline"
+    >
+      View
+    </button>
+  )}
+                    
+                    </td>
                   <td className="px-4 py-3 border-b">{item.address}</td>
                   <td className="px-4 py-3 border-b">
                     <button
@@ -323,6 +338,23 @@ export default function TestImonial() {
           </div>
         </div>
       )}
+          {selectedMessage && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl p-6 max-w-3xl w-full shadow-lg relative">
+      <button
+        onClick={() => setSelectedMessage(null)}
+        className="absolute top-2 right-3 text-gray-500 hover:text-gray-800"
+      >
+        ✖
+      </button>
+
+      <h3 className="text-lg font-semibold mb-3">Message</h3>
+      <p className="text-gray-700 whitespace-pre-wrap">
+        {selectedMessage}
+      </p>
+    </div>
+  </div>
+)}
     </div>
   );
 }
