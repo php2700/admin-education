@@ -9,6 +9,7 @@ export default function About() {
         description: [""],
         whyUsDescription: [""],
         howDiffrentDescription: [""],
+         howDiffrentHeader: "",
         safetyDescription: [""],
         tutorDescription: "",
     });
@@ -58,6 +59,7 @@ export default function About() {
             formData.append("whyUsDescription", JSON.stringify(form.whyUsDescription));
             formData.append("howDiffrentDescription", JSON.stringify(form.howDiffrentDescription));
             formData.append("safetyDescription", JSON.stringify(form.safetyDescription));
+              formData.append("howDiffrentHeader", form.howDiffrentHeader); 
             if (image) formData.append("image", image);
 
             const res = await axios.post(
@@ -93,6 +95,7 @@ export default function About() {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
+             console.log("Backend se aaya data:", res.data.data); 
 
             if (res.data?.data) {
                 const d = res.data.data;
@@ -102,6 +105,7 @@ export default function About() {
                     whyUsDescription: d.whyUsDescription || [""],
                     howDiffrentDescription: d.howDiffrentDescription || [""],
                     safetyDescription: d.safetyDescription || [""],
+                      howDiffrentHeader: d.howDiffrentHeader || "", 
                     tutorDescription: d.tutorDescription || "",
                 });
 
@@ -164,6 +168,20 @@ export default function About() {
                 ].map((field) => (
                     <div key={field.key}>
                         <label className="font-semibold text-gray-700">{field.label}</label>
+                                {field.key === "howDiffrentDescription" && (
+            <div className="mb-3 mt-1">
+                <label className="text-sm text-gray-500 block mb-1">
+                    Intro Line (e.g. "Following are the highlights...")
+                </label>
+                <input
+                    type="text"
+                    value={form.howDiffrentHeader} // Naya variable bind kiya
+                    onChange={(e) => setForm({ ...form, howDiffrentHeader: e.target.value })}
+                    className="w-full p-3 border border-blue-300 rounded-xl bg-blue-50"
+                    placeholder="Enter the intro line here..."
+                />
+            </div>
+        )}
                         {form[field.key].map((val, idx) => (
                             <div key={idx} className="flex items-center gap-3 mt-2">
                                 <input
