@@ -337,7 +337,7 @@ export default function BlogTab() {
             {preview && (
               <div className="mb-3">
                 {form.type === "image" ? (
-                  <img src={preview} className="rounded-xl" />
+                  <img src={preview} className="rounded-xl h-50" />
                 ) : (
                   <video src={preview} controls className="rounded-xl" />
                 )}

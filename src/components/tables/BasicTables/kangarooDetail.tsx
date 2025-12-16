@@ -236,8 +236,8 @@ export const KargarooDetail = () => {
       </div>
 
       {openForm && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4">
-          <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-xl">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4 z-100000 overflow-y-auto">
+          <div className="bg-white p-6 rounded-xl w-full max-w-4xl shadow-xl">
             <h3 className="text-lg font-semibold mb-4">
               {form.id ? "Edit Detail" : "Add Detail"}
             </h3>
