@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaEdit, FaTrashAlt, FaEye, FaPlus, FaTimes } from "react-icons/fa";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function TermsServiceTab() {
   // State structure updated for points objects
@@ -290,13 +292,30 @@ export default function TermsServiceTab() {
                         {/* Description Input */}
                         <div className="md:col-span-2">
                              <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Point Description</label>
-                            <textarea
+                            {/* <textarea
                                 value={p.desc}
                                 onChange={(e) => handlePointChange(idx, "desc", e.target.value)}
                                 placeholder="The details of this specific point..."
                                 rows={2}
                                 className="w-full p-2 border border-gray-300 rounded text-sm focus:border-blue-500 outline-none"
-                            />
+                            /> */}
+                            <ReactQuill
+  value={p.desc}
+  onChange={(value) =>
+    handlePointChange(idx, "desc", value)
+  }
+  modules={{
+  toolbar: [
+    [{ color: [] }, { background: [] }],
+    ["bold", "italic", "underline"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link"],
+    ["clean"],
+  ],
+}}
+  placeholder="The details of this specific point..."
+  className="bg-white rounded"
+/>
                         </div>
                     </div>
                   </div>

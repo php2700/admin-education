@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function StbTestPrepAdmin() {
   const [loading, setLoading] = useState(false);
@@ -122,13 +124,33 @@ const initialState = {
           <h3 className="font-bold text-lg mb-3 text-gray-700">Hero Section</h3>
           <input name="heroTitle" value={form.heroTitle} onChange={handleChange} placeholder="Main Title (e.g. STB TEST PREP)" className="w-full mb-3 p-2 border rounded" />
           <textarea name="heroDescription" value={form.heroDescription} onChange={handleChange} placeholder="Hero Description..." rows={3} className="w-full p-2 border rounded" />
+          
         </div>
 
         {/* --- 2. ABOUT STB --- */}
         <div className="mb-6 border-b pb-6">
           <h3 className="font-bold text-lg mb-3 text-gray-700">About the STB</h3>
           <input name="aboutHeading" value={form.aboutHeading} onChange={handleChange} placeholder="Heading (e.g. About the STB)" className="w-full mb-3 p-2 border rounded" />
-          <textarea name="aboutDescription" value={form.aboutDescription} onChange={handleChange} placeholder="About Description..." rows={5} className="w-full p-2 border rounded" />
+          {/* <textarea name="aboutDescription" value={form.aboutDescription} onChange={handleChange} placeholder="About Description..." rows={5} className="w-full p-2 border rounded" /> */}
+          <ReactQuill
+  value={form.aboutDescription}
+    modules={ {
+  toolbar: [
+    [{ color: [] }, { background: [] }],
+    ["bold", "italic", "underline"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link"],
+    ["clean"],
+  ],
+}}
+  onChange={(value) =>
+    handleChange({
+      target: { name: "aboutDescription", value },
+    })
+  }
+  placeholder="About Description..."
+  className="bg-white rounded"
+/>
         </div>
 
         {/* --- NEW STB FIELDS --- */}

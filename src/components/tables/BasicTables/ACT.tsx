@@ -11,11 +11,14 @@ export default function ActTestPrepAdmin() {
   const initialState = {
     heroTitle: "",
     heroDescription: "",
-     herosubtitle: "",
+    herosubtitle: "",
 
     aboutHeading: "",
     aboutDescription: "",
     aboutList: [{ title: "", description: "" }],
+
+    additionalInfo: "",
+    additionalInfoList: [{ title: "", description: "" }],
 
     actHeading: "",
     actList: [{ title: "", description: "" }],
@@ -48,7 +51,8 @@ export default function ActTestPrepAdmin() {
   // ===========================
   //       INPUT HANDLERS
   // ===========================
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleObjectListChange = (listName, index, field, value) => {
     const updated = [...form[listName]];
@@ -73,14 +77,21 @@ export default function ActTestPrepAdmin() {
   // ===========================
   const handleSave = async () => {
     if (!form.heroTitle.trim()) return toast.error("Hero Title is required!");
-    if (!form.heroDescription.trim()) return toast.error("Hero Description is required!");
+    if (!form.heroDescription.trim())
+      return toast.error("Hero Description is required!");
 
-    if (!form.aboutHeading.trim()) return toast.error("About Heading is required!");
-    if (!form.aboutDescription.trim()) return toast.error("About Description is required!");
+    if (!form.aboutHeading.trim())
+      return toast.error("About Heading is required!");
+    if (!form.aboutDescription.trim())
+      return toast.error("About Description is required!");
 
     if (!form.actHeading.trim()) return toast.error("ACT Heading is required!");
 
     const cleanedAboutList = form.aboutList.filter(
+      (a) => a.title.trim() !== "" || a.description.trim() !== ""
+    );
+
+    const cleanedAdditionalList = form.additionalInfoList.filter(
       (a) => a.title.trim() !== "" || a.description.trim() !== ""
     );
     const cleanedActList = form.actList.filter(
@@ -93,6 +104,8 @@ export default function ActTestPrepAdmin() {
     if (cleanedActList.length === 0)
       return toast.error("At least one ACT List item is required!");
 
+    if (cleanedAdditionalList?.length === 0)
+      return toast.error("At least one ACT List item is required!");
     const payload = {
       ...form,
       aboutList: cleanedAboutList,
@@ -172,7 +185,7 @@ export default function ActTestPrepAdmin() {
             className="w-full p-2 border rounded"
             placeholder="Hero Description..."
           />
-            {/* <textarea
+          {/* <textarea
             name="hero"
             value={form.herosubtitle}
             onChange={handleChange}
@@ -212,7 +225,12 @@ export default function ActTestPrepAdmin() {
               <input
                 value={item.title}
                 onChange={(e) =>
-                  handleObjectListChange("aboutList", index, "title", e.target.value)
+                  handleObjectListChange(
+                    "aboutList",
+                    index,
+                    "title",
+                    e.target.value
+                  )
                 }
                 className="w-full p-2 border rounded mb-2"
                 placeholder="Title..."
@@ -250,6 +268,72 @@ export default function ActTestPrepAdmin() {
           </button>
         </section>
 
+        {/* addtional info */}
+        <section className="mb-8 border-b pb-6">
+          <h3 className="text-xl font-bold mb-4 text-gray-700">
+            addtional info <span className="text-red-500">*</span>
+          </h3>
+
+          <input
+            name="additionalInfo"
+            value={form.additionalInfo}
+            onChange={handleChange}
+            className="w-full p-2 border rounded mb-3"
+            placeholder="Additional info..."
+          />
+
+          <h4 className="font-semibold mb-2">Add List Items:</h4>
+
+          {form.additionalInfoList?.map((item, index) => (
+            <div key={index} className="border rounded p-4 mb-3 bg-gray-50">
+              <input
+                value={item.title}
+                onChange={(e) =>
+                  handleObjectListChange(
+                    "additionalInfoList",
+                    index,
+                    "title",
+                    e.target.value
+                  )
+                }
+                className="w-full p-2 border rounded mb-2"
+                placeholder="Title..."
+              />
+
+              <textarea
+                value={item.description}
+                onChange={(e) =>
+                  handleObjectListChange(
+                    "additionalInfoList",
+                    index,
+                    "description",
+                    e.target.value
+                  )
+                }
+                className="w-full p-2 border rounded"
+                rows={3}
+                placeholder="Description..."
+              />
+
+              <button
+                onClick={() =>
+                  removeObjectListItem("additionalInfoList", index)
+                }
+                className="text-red-600 mt-2"
+              >
+                ✕ Remove
+              </button>
+            </div>
+          ))}
+
+          <button
+            onClick={() => addObjectListItem("additionalInfoList")}
+            className="text-blue-600"
+          >
+            + Add addtional info
+          </button>
+        </section>
+
         {/* --------------------------- ACT LIST SECTION --------------------------- */}
         <section className="mb-8">
           <h3 className="text-xl font-bold mb-4 text-gray-700">
@@ -269,7 +353,12 @@ export default function ActTestPrepAdmin() {
               <input
                 value={item.title}
                 onChange={(e) =>
-                  handleObjectListChange("actList", index, "title", e.target.value)
+                  handleObjectListChange(
+                    "actList",
+                    index,
+                    "title",
+                    e.target.value
+                  )
                 }
                 className="w-full p-2 border rounded mb-2"
                 placeholder="ACT Test Section Title..."
