@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function CompetitionTable() {
   const [form, setForm] = useState({
@@ -251,7 +253,7 @@ export default function CompetitionTable() {
               placeholder="AMC Title"
               className="w-full p-3 border border-gray-300 rounded-xl mb-2"
             />
-            <input
+            {/* <input
               type="text"
               value={c.amc}
               onChange={(e) =>
@@ -259,7 +261,25 @@ export default function CompetitionTable() {
               }
               placeholder="AMC"
               className="w-full p-3 border border-gray-300 rounded-xl mb-2"
-            />
+            /> */}
+            <ReactQuill
+  value={c.amc}
+  onChange={(value) =>
+    handleCompetitionChange(index, "amc", value)
+  }
+   modules={{
+                toolbar: [
+                    [{ color: [] }, { background: [] }],
+                  [{ header: [1, 2, false] }],
+                  ["bold", "italic", "underline"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["link"],
+                  ["clean"],
+                ],
+              }}
+  placeholder="AMC"
+  className="mb-2 border border-gray-300 rounded-xl"
+/>
             <textarea
               value={c.description}
               onChange={(e) =>
