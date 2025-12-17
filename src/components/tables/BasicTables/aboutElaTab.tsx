@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function AboutElaTab() {
   const [form, setForm] = useState({
@@ -9,7 +11,7 @@ export default function AboutElaTab() {
     description: "",
     heading: "",
     whoTake: "",
-     questionType: [{ title: "", description: "" }],
+    questionType: [{ title: "", description: "" }],
   });
 
   const [loading, setLoading] = useState(false);
@@ -31,10 +33,9 @@ export default function AboutElaTab() {
           description: data.description || "",
           heading: data.heading || "",
           whoTake: data.whoTake || "",
-            questionType:
-    data.questionType?.length
-      ? data.questionType
-      : [{ title: "", description: "" }],
+          questionType: data.questionType?.length
+            ? data.questionType
+            : [{ title: "", description: "" }],
         });
       }
     } catch (err) {
@@ -60,26 +61,24 @@ export default function AboutElaTab() {
     setForm({ ...form, questionType: newArray });
   };
 
- const addQuestionType = () => {
-  setForm({
-    ...form,
-    questionType: [...form.questionType, { title: "", description: "" }],
-  });
-};
+  const addQuestionType = () => {
+    setForm({
+      ...form,
+      questionType: [...form.questionType, { title: "", description: "" }],
+    });
+  };
 
-const handleQuestionTypeChange = (e, index, field) => {
-  const newArray = [...form.questionType];
-  newArray[index][field] = e.target.value;
-  setForm({ ...form, questionType: newArray });
-};
+  const handleQuestionTypeChange = (e, index, field) => {
+    const newArray = [...form.questionType];
+    newArray[index][field] = e.target.value;
+    setForm({ ...form, questionType: newArray });
+  };
 
-
- const removeQuestionType = (index) => {
-  const newArray = [...form.questionType];
-  newArray.splice(index, 1);
-  setForm({ ...form, questionType: newArray });
-};
-
+  const removeQuestionType = (index) => {
+    const newArray = [...form.questionType];
+    newArray.splice(index, 1);
+    setForm({ ...form, questionType: newArray });
+  };
 
   // Save (Upsert)
   const handleSave = async () => {
@@ -88,7 +87,7 @@ const handleQuestionTypeChange = (e, index, field) => {
       !form.description ||
       !form.heading ||
       !form.whoTake ||
-        !form.questionType.every(q => q.title && q.description)
+      !form.questionType.every((q) => q.title && q.description)
     )
       return toast.error("All fields are required");
 
@@ -155,62 +154,76 @@ const handleQuestionTypeChange = (e, index, field) => {
 
         {/* Who Take */}
         <label className="block mb-2 font-medium">Who Take</label>
-        <input
+        {/* <input
           type="text"
           name="whoTake"
           value={form.whoTake}
           onChange={handleChange}
           className="w-full p-3 border border-gray-300 rounded-xl mb-4"
           placeholder="Who takes this test?"
+        /> */}
+        <ReactQuill
+          value={form.whoTake}
+          onChange={(value) =>
+            setForm((prev) => ({
+              ...prev,
+              whoTake: value,
+            }))
+          }
+          modules={{
+            toolbar: [
+              ["bold", "italic", "underline", "link"],
+              [{ list: "ordered" }, { list: "bullet" }],
+              [{ color: [] }, { background: [] }],
+              ["clean"],
+            ],
+          }}
+          placeholder="Who takes this test?"
+          className="mb-4"
         />
 
         {/* Question Type (Array Field) */}
         <label className="block mb-2 font-medium">Question Types</label>
-      {form.questionType.map((q, index) => (
-  <div key={index} className="border p-4 rounded-xl mb-4 bg-gray-50">
-    
-    <div className="flex justify-between items-center mb-3">
-      <p className="font-medium">
-        Question {index + 1}
-      </p>
-      {index > 0 && (
+        {form.questionType.map((q, index) => (
+          <div key={index} className="border p-4 rounded-xl mb-4 bg-gray-50">
+            <div className="flex justify-between items-center mb-3">
+              <p className="font-medium">Question {index + 1}</p>
+              {index > 0 && (
+                <button
+                  onClick={() => removeQuestionType(index)}
+                  className="text-red-500 text-sm"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+
+            <input
+              type="text"
+              value={q.title}
+              onChange={(e) => handleQuestionTypeChange(e, index, "title")}
+              placeholder="Question title"
+              className="w-full p-3 border border-gray-300 rounded-xl mb-3"
+            />
+
+            <textarea
+              rows={2}
+              value={q.description}
+              onChange={(e) =>
+                handleQuestionTypeChange(e, index, "description")
+              }
+              placeholder="Question description"
+              className="w-full p-3 border border-gray-300 rounded-xl"
+            />
+          </div>
+        ))}
+
         <button
-          onClick={() => removeQuestionType(index)}
-          className="text-red-500 text-sm"
+          onClick={addQuestionType}
+          className="text-blue-600 text-sm mb-4"
         >
-          Remove
+          + Add Question Type
         </button>
-      )}
-    </div>
-
-    <input
-      type="text"
-      value={q.title}
-      onChange={(e) =>
-        handleQuestionTypeChange(e, index, "title")
-      }
-      placeholder="Question title"
-      className="w-full p-3 border border-gray-300 rounded-xl mb-3"
-    />
-
-    <textarea
-      rows={2}
-      value={q.description}
-      onChange={(e) =>
-        handleQuestionTypeChange(e, index, "description")
-      }
-      placeholder="Question description"
-      className="w-full p-3 border border-gray-300 rounded-xl"
-    />
-  </div>
-))}
-
-<button
-  onClick={addQuestionType}
-  className="text-blue-600 text-sm mb-4"
->
-  + Add Question Type
-</button>
 
         {/* Save Button */}
         <button

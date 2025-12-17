@@ -292,14 +292,31 @@ export default function ScatTestAdminPage() {
         {/* Scoring Levels */}
         <div className="mb-6">
           <h2 className="font-semibold mb-2">Scoring Section</h2>
-          <input
+          {/* <input
             type="text"
             name="scoringHeading"
             value={form.scoringHeading}
             onChange={handleChange}
             placeholder="Scoring Heading"
             className="w-full mb-2 p-2 border rounded"
-          />
+          /> */}
+     <ReactQuill
+  value={form.scoringHeading}
+  onChange={(value) =>
+    setForm((prev) => ({
+      ...prev,
+      scoringHeading: value,
+    }))
+  }
+  modules={{
+  toolbar: [
+    [{ header: [1, 2, false] }],
+    ["bold", "italic", "underline"],
+    ["clean"],
+  ],
+}}
+  placeholder="Scoring Heading"
+/>
           {form.scoringLevels.map((item, idx) => (
             <div key={idx} className="mb-2 p-2 border rounded">
               <input

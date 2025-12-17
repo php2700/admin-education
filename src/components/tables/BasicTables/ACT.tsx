@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function ActTestPrepAdmin() {
   const [loading, setLoading] = useState(false);
@@ -364,7 +366,7 @@ export default function ActTestPrepAdmin() {
                 placeholder="ACT Test Section Title..."
               />
 
-              <textarea
+              {/* <textarea
                 value={item.description}
                 onChange={(e) =>
                   handleObjectListChange(
@@ -377,8 +379,26 @@ export default function ActTestPrepAdmin() {
                 className="w-full p-2 border rounded"
                 rows={3}
                 placeholder="Description..."
-              />
-
+              /> */}
+<ReactQuill
+  value={item.description}
+  onChange={(value) =>
+    handleObjectListChange(
+      "actList",
+      index,
+      "description",
+      value
+    )
+  }
+  modules={{
+  toolbar: [
+    ["bold", "italic", "underline"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["clean"],
+  ],
+}}
+  placeholder="Description..."
+/>
               <button
                 onClick={() => removeObjectListItem("actList", index)}
                 className="text-red-600 mt-2"

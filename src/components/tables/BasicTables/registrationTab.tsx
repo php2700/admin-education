@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Measure from "./measure";
 
 export default function Registration() {
   const [form, setForm] = useState({
@@ -75,7 +76,10 @@ export default function Registration() {
   };
 
   return (
-    <div className="bg-gray-50 p-8 min-h-[80vh] flex flex-col items-center">
+    <div className="">
+    
+    <div className="bg-gray-50 p-8  flex flex-col items-center">
+     
       <div className="bg-white rounded-2xl p-6 shadow-lg w-full md:w-2/3 lg:w-1/2">
     
 
@@ -105,6 +109,8 @@ export default function Registration() {
           {loading ? "Saving..." : "Save Registration Info"}
         </button>
       </div>
+    </div>
+     <Measure/>
     </div>
   );
 }
