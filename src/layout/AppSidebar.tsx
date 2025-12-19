@@ -9,6 +9,7 @@ import {
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
+  GroupIcon,
   HorizontaLDots,
   ListIcon,
   PageIcon,
@@ -35,7 +36,7 @@ const navItems: NavItem[] = [
   },
   {
     name: "Home",
-    icon: <TableIcon />,
+    icon: <GroupIcon />,
     subItems: [
       {
         name: "Banner",
@@ -69,18 +70,18 @@ const navItems: NavItem[] = [
   },
 
   {
-    icon: <TableIcon />,
+    icon: <ListIcon />,
     name: "Blog",
     path: "/blog",
   },
   {
-    icon: <TableIcon />,
+    icon: <ListIcon />,
     name: "Pricing",
     path: "/pricing",
   },
   {
     name: "English",
-    icon: <TableIcon />,
+    icon: <ListIcon />,
     subItems: [
       {
         name: "Common English Language",
@@ -105,13 +106,13 @@ const navItems: NavItem[] = [
     ],
   },
   {
-     icon: <TableIcon />,
+    icon: <ListIcon />,
     name: "K-12",
     path: "/k-12",
   },
   {
     name: "Maths",
-    icon: <TableIcon />,
+    icon: <ListIcon />,
     subItems: [
       {
         name: "Common Core Math",
@@ -140,106 +141,102 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    icon: <TableIcon />,
+    icon: <ListIcon />,
     name: "About",
     path: "/about",
   },
   {
-    icon: <TableIcon />,
+    icon: <ListIcon />,
     name: "TestImonial",
     path: "/testImonial",
   },
   {
-    icon: <TableIcon />,
+    icon: <ListIcon />,
     name: "Faq",
     path: "/faq",
   },
   {
     name: "Contact",
-    icon: <TableIcon />,
+    icon: <UserCircleIcon />,
     subItems: [
       {
         name: "Contact Text",
         path: "/contact-text",
       },
-    ]
+    ],
   },
-    {
-    icon: <TableIcon />,
-    name: "terms -services",
+  {
+    icon: <ListIcon />,
+    name: "Terms Services",
     path: "/terms -services",
   },
-   {
-    icon: <TableIcon />,
-    name: "Our-Managment",
-    path: "/Our-Managments",  
+  {
+    icon: <ListIcon />,
+    name: "Our Managment",
+    path: "/Our-Managments",
   },
   {
     name: "Testprepration",
-    icon: <TableIcon />,
+    icon: <ListIcon />,
     subItems: [
       {
         name: "SAT ",
-        path: "/TestPrepDetails", 
+        path: "/TestPrepDetails",
       },
-     {
+      {
         name: "SSAT",
-        path: "/SSATtestDetails",   
+        path: "/SSATtestDetails",
       },
       {
         name: "PSAT",
-        path: "/PSATtestDetails",   
+        path: "/PSATtestDetails",
       },
-       {
+      {
         name: "SHSAT",
-        path: "/SHSATtestDetails",   
+        path: "/SHSATtestDetails",
       },
-        {
+      {
         name: "ISEE",
-        path: "/ISEEtestDetails",   
+        path: "/ISEEtestDetails",
       },
-       {
+      {
         name: "ELA",
-        path: "/ELAtestDetails",   
+        path: "/ELAtestDetails",
       },
-         {
+      {
         name: "SCAT",
-        path: "/ScatTestPrepAdmin",   
+        path: "/ScatTestPrepAdmin",
       },
-        {
+      {
         name: "AMC",
-        path: "/AMCtestDetails",   
+        path: "/AMCtestDetails",
       },
-        {
+      {
         name: "KANGAROO",
-        path: "/KangarooDetails",   
+        path: "/KangarooDetails",
       },
-          {
+      {
         name: "ACT",
-        path: "/ACTtestDetails",   
+        path: "/ACTtestDetails",
       },
-        {
+      {
         name: "COGAT",
-        path: "/COGATtestDetails",   
+        path: "/COGATtestDetails",
       },
-        {
+      {
         name: "SBAC",
-        path: "/SBACtestDetails",   
+        path: "/SBACtestDetails",
       },
-       {
+      {
         name: "ACCUPLACER",
-        path: "/AccuplacerDetails",   
-      }
-      ,
-       {
+        path: "/AccuplacerDetails",
+      },
+      {
         name: "STB",
-        path: "/STBTtestDetails",   
-      }
-      
-     
+        path: "/STBTtestDetails",
+      },
     ],
   },
-
 
   // {
   //   icon: <TableIcon />,
@@ -331,19 +328,22 @@ const AppSidebar: React.FC = () => {
           {nav.subItems ? (
             <button
               onClick={() => handleSubmenuToggle(index, menuType)}
-              className={`menu-item group ${openSubmenu?.type === menuType && openSubmenu?.index === index
+              className={`menu-item group ${
+                openSubmenu?.type === menuType && openSubmenu?.index === index
                   ? "menu-item-active"
                   : "menu-item-inactive"
-                } cursor-pointer ${!isExpanded && !isHovered
+              } cursor-pointer ${
+                !isExpanded && !isHovered
                   ? "lg:justify-center"
                   : "lg:justify-start"
-                }`}
+              }`}
             >
               <span
-                className={`menu-item-icon-size  ${openSubmenu?.type === menuType && openSubmenu?.index === index
+                className={`menu-item-icon-size  ${
+                  openSubmenu?.type === menuType && openSubmenu?.index === index
                     ? "menu-item-icon-active"
                     : "menu-item-icon-inactive"
-                  }`}
+                }`}
               >
                 {nav.icon}
               </span>
@@ -352,11 +352,12 @@ const AppSidebar: React.FC = () => {
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
-                  className={`ml-auto w-5 h-5 transition-transform duration-200 ${openSubmenu?.type === menuType &&
-                      openSubmenu?.index === index
+                  className={`ml-auto w-5 h-5 transition-transform duration-200 ${
+                    openSubmenu?.type === menuType &&
+                    openSubmenu?.index === index
                       ? "rotate-180 text-brand-500"
                       : ""
-                    }`}
+                  }`}
                 />
               )}
             </button>
@@ -364,14 +365,16 @@ const AppSidebar: React.FC = () => {
             nav.path && (
               <Link
                 to={nav.path}
-                className={`menu-item group ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
-                  }`}
+                className={`menu-item group ${
+                  isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+                }`}
               >
                 <span
-                  className={`menu-item-icon-size ${isActive(nav.path)
+                  className={`menu-item-icon-size ${
+                    isActive(nav.path)
                       ? "menu-item-icon-active"
                       : "menu-item-icon-inactive"
-                    }`}
+                  }`}
                 >
                   {nav.icon}
                 </span>
@@ -399,29 +402,32 @@ const AppSidebar: React.FC = () => {
                   <li key={subItem.name}>
                     <Link
                       to={subItem.path}
-                      className={`menu-dropdown-item ${isActive(subItem.path)
+                      className={`menu-dropdown-item ${
+                        isActive(subItem.path)
                           ? "menu-dropdown-item-active"
                           : "menu-dropdown-item-inactive"
-                        }`}
+                      }`}
                     >
                       {subItem.name}
                       <span className="flex items-center gap-1 ml-auto">
                         {subItem.new && (
                           <span
-                            className={`ml-auto ${isActive(subItem.path)
+                            className={`ml-auto ${
+                              isActive(subItem.path)
                                 ? "menu-dropdown-badge-active"
                                 : "menu-dropdown-badge-inactive"
-                              } menu-dropdown-badge`}
+                            } menu-dropdown-badge`}
                           >
                             new
                           </span>
                         )}
                         {subItem.pro && (
                           <span
-                            className={`ml-auto ${isActive(subItem.path)
+                            className={`ml-auto ${
+                              isActive(subItem.path)
                                 ? "menu-dropdown-badge-active"
                                 : "menu-dropdown-badge-inactive"
-                              } menu-dropdown-badge`}
+                            } menu-dropdown-badge`}
                           >
                             pro
                           </span>
@@ -441,9 +447,10 @@ const AppSidebar: React.FC = () => {
   return (
     <aside
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
-        ${isExpanded || isMobileOpen
-          ? "w-[290px]"
-          : isHovered
+        ${
+          isExpanded || isMobileOpen
+            ? "w-[290px]"
+            : isHovered
             ? "w-[290px]"
             : "w-[90px]"
         }
@@ -453,8 +460,9 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-          }`}
+        className={`py-8 flex ${
+          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+        }`}
       >
         <Link to="/home">
           {isExpanded || isHovered || isMobileOpen ? (
@@ -489,10 +497,11 @@ const AppSidebar: React.FC = () => {
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                  !isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"
-                  }`}
+                }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Menu"
